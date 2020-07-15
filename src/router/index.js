@@ -1,7 +1,6 @@
-import { auth } from 'firebase';
+import { auth } from '../utils/firebase';
 import Vue from 'vue';
 import VueRouter from 'vue-router';
-import Home from '../views/Home.vue';
 
 Vue.use(VueRouter);
 
@@ -9,7 +8,7 @@ Vue.use(VueRouter);
   {
     path: '/',
     name: 'Home',
-    component: Home,
+    component: () => import(/* webpackChunkName: "home" */ '../views/Home.vue'),
     meta: {
       requiresAuth: true
     }

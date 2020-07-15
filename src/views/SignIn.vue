@@ -56,7 +56,6 @@ export default {
       return false;
     },
     handleSignIn: function() {
-      console.log(this.errors);
       if (this.validateForm()) {
         this.$store.dispatch("signIn", {
           email: this.email,

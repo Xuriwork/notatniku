@@ -66,12 +66,17 @@ export default {
   },
   methods: {
     validateForm: function() {
+      this.errors = {};
       const form = this.email && this.password && this.confirmPassword && this.name;
       if (form) return true;
+
       if (!this.email) this.errors.email = "This field is required.";
       if (!this.password) this.errors.password = "This field is required.";
       if (!this.confirmPassword) this.errors.confirmPassword = "This field is required.";
       if (!this.name) this.errors.name = "This field is required.";
+
+      if (this.email && !this.validateEmail(this.email)) this.errors.email = "This email address is not valid";
+
       return false;
     },
     handleSignUp: function() {
@@ -82,6 +87,10 @@ export default {
           name: this.name
         });
       }
+    },
+    validateEmail: function(email) {
+      const regEx = /[^@ \t\r\n]+@[^@ \t\r\n]+\.[^@ \t\r\n]+/;
+      return regEx.test(email);
     }
   }
 };

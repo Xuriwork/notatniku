@@ -60,23 +60,26 @@ export default new Vuex.Store({
 			dispatch('fetchUser', user);
 		},
 		async handleForgotPassword(_, email) {
-			await auth
-				.sendPasswordResetEmail(email)
-				.then(() => {
-					notyf.success({
-						message: 'Password reset email has been sent successful',
-						duration: 9000,
-						position: {
-							x: 'left',
-							y: 'top',
-						},
-					});
-				})
+			await auth.sendPasswordResetEmail(email).then(() => {
+				notyf.success({
+					message: 'Password reset email has been sent successful',
+					duration: 9000,
+					position: {
+						x: 'left',
+						y: 'top',
+					},
+				});
+			});
 		},
 		async fetchUser({ commit }, user) {
 			const userDocument = await usersCollection.doc(user.uid).get();
 			commit('setUser', userDocument.data());
-			router.push('/');
+			if (
+				router.currentRoute.path === '/sign-in' ||
+				router.currentRoute.path === '/sign-up'
+			) {
+				router.push('/');
+			}
 		},
 	},
 	modules: {},
