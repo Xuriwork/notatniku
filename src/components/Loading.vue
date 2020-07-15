@@ -1,10 +1,10 @@
 <template>
-    <div className='loading-container'>
-        <div className='loader'></div>
+    <div class='loading-container'>
+        <div class='loader'></div>
     </div>
 </template>
 
-<style lang="sass" scoped>
+<style lang="scss" scoped>
 .loading-container {
 	@extend %flex-center-column;
 	height: 100%;

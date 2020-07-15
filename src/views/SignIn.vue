@@ -7,25 +7,28 @@
       <form>
         <input
           type="email"
-          v-model="email"
+          v-model.trim="email"
           placeholder="Email"
           v-bind:style="{border: errors.email ? '1px solid #ff5959' : null}"
         />
-        <p class="input-field-error">{{ errors.email && errors.email.message }}</p>
+        <p class="input-field-error">{{ errors.email }}</p>
         <input
           type="password"
-          v-model="password"
+          v-model.trim="password"
           placeholder="Password"
           v-bind:style="{border: errors.password ? '1px solid #ff5959' : null}"
         />
-        <p class="input-field-error">{{ errors.password && errors.password.message }}</p>
+        <p class="input-field-error">{{ errors.password }}</p>
         <span class="forgot-password-span">
           <router-link to="/forgot-password">Forgot password?</router-link>
         </span>
-        <button onclick="handleSignIn">Sign In</button>
+        <button v-on:click.prevent="handleSignIn">Sign In</button>
       </form>
       <span>
-        <router-link to="/sign-up">Don't have an account? Create one here.</router-link>
+        <router-link to="/sign-up">
+          Don't have an account?
+          <span>Create one here.</span>
+        </router-link>
       </span>
     </div>
     <div class="background-image-container"></div>
@@ -36,10 +39,18 @@
 export default {
   data() {
     return {
-      email: '',
-      password: '',
+      email: "",
+      password: "",
       errors: []
+    };
+  },
+  methods: {
+    handleSignIn: function() {
+      this.$store.dispatch("signIn", {
+        email: this.email,
+        password: this.password
+      });
     }
   }
-}
+};
 </script>

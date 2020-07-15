@@ -54,7 +54,7 @@ a {
   align-items: center;
 }
 
-.sign-in-component, .sign-up-component {
+.sign-in-component, .sign-up-component, .forgot-password-component {
   display: flex;
   background-color: #ece3db;
   height: 100%;
@@ -72,6 +72,11 @@ a {
 
     h1 {
       margin-top: 25px;
+    }
+
+    a span {
+      color: #be9477;
+      font-weight: 600;
     }
 
     .input-field-error {
@@ -101,7 +106,6 @@ a {
       text-align: right;
       width: 100%;
       margin-top: 5px;
-      cursor: pointer;
     }
 
     button {
