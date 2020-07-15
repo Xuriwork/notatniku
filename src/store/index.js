@@ -9,16 +9,19 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
 	state: {
-		userProfile: {},
+		user: {},
+		errors: {},
 	},
 	mutations: {
-		setUserProfile(state, payload) {
-			state.userProfile = payload;
+		setUser(state, payload) {
+			state.user = payload;
+		},
+		setErrors(state, payload) {
+			state.errors = payload;
 		},
 	},
 	actions: {
 		async signIn({ dispatch }, data) {
-			console.log(data);
 			const { user } = await auth
 				.signInWithEmailAndPassword(data.email, data.password)
 				.catch((error) => {
@@ -31,7 +34,7 @@ export default new Vuex.Store({
 						},
 					});
 				});
-			dispatch('fetchUserProfile', user);
+			dispatch('fetchUser', user);
 		},
 		async signUp({ dispatch }, data) {
 			const dateCreated = new Date();
@@ -54,26 +57,25 @@ export default new Vuex.Store({
 						},
 					});
 				});
-			dispatch('fetchUserProfile', user);
+			dispatch('fetchUser', user);
 		},
 		async handleForgotPassword(_, email) {
-      await auth
-      .sendPasswordResetEmail(email)
-      .then(() => {
-        notyf.success({
-          message: 'Password reset email has been sent successful',
-          duration: 9000,
-          position: {
-            x: 'left',
-            y: 'top',
-          },
-        });
-      })
-      .catch((error) => (this.error = error.message));
+			await auth
+				.sendPasswordResetEmail(email)
+				.then(() => {
+					notyf.success({
+						message: 'Password reset email has been sent successful',
+						duration: 9000,
+						position: {
+							x: 'left',
+							y: 'top',
+						},
+					});
+				})
 		},
-		async fetchUserProfile({ commit }, user) {
+		async fetchUser({ commit }, user) {
 			const userDocument = await usersCollection.doc(user.uid).get();
-			commit('setUserProfile', userDocument.data());
+			commit('setUser', userDocument.data());
 			router.push('/');
 		},
 	},

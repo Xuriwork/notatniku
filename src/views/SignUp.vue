@@ -56,16 +56,32 @@ export default {
       password: "",
       confirmPassword: "",
       name: "",
-      errors: []
+      errors: {
+        emailError: null,
+        password: null,
+        confirmPassword: null,
+        name: null
+      }
     };
   },
   methods: {
+    validateForm: function() {
+      const form = this.email && this.password && this.confirmPassword && this.name;
+      if (form) return true;
+      if (!this.email) this.errors.email = "This field is required.";
+      if (!this.password) this.errors.password = "This field is required.";
+      if (!this.confirmPassword) this.errors.confirmPassword = "This field is required.";
+      if (!this.name) this.errors.name = "This field is required.";
+      return false;
+    },
     handleSignUp: function() {
-      this.$store.dispatch("signUp", {
-        email: this.email,
-        password: this.password,
-        name: this.name
-      });
+      if (this.validateForm()) {
+        this.$store.dispatch("signUp", {
+          email: this.email,
+          password: this.password,
+          name: this.name
+        });
+      }
     }
   }
 };

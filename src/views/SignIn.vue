@@ -41,15 +41,28 @@ export default {
     return {
       email: "",
       password: "",
-      errors: []
+      errors: {
+        email: null,
+        password: null
+      }
     };
   },
   methods: {
+    validateForm: function() {
+      const form = this.email && this.password;
+      if (form) return true;
+      if (!this.email) this.errors.email = "This field is required.";
+      if (!this.password) this.errors.password = "This field is required.";
+      return false;
+    },
     handleSignIn: function() {
-      this.$store.dispatch("signIn", {
-        email: this.email,
-        password: this.password
-      });
+      console.log(this.errors);
+      if (this.validateForm()) {
+        this.$store.dispatch("signIn", {
+          email: this.email,
+          password: this.password
+        });
+      }
     }
   }
 };
