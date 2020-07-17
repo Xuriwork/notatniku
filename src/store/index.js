@@ -13,7 +13,7 @@ export default new Vuex.Store({
 		userProfile: {},
 		errors: {},
 		notes: [],
-		modalType: null
+		modalType: null,
 	},
 	mutations: {
 		setUser(state, payload) {
@@ -22,12 +22,15 @@ export default new Vuex.Store({
 		setUserProfile(state, payload) {
 			state.userProfile = payload;
 		},
+		setNotes(state, payload) {
+			state.notes = payload;
+		},
 		setErrors(state, payload) {
 			state.errors = payload;
 		},
 		setModalType(state, payload) {
 			state.modalType = payload;
-		}
+		},
 	},
 	actions: {
 		async signIn({ dispatch }, data) {
@@ -80,13 +83,22 @@ export default new Vuex.Store({
 			});
 		},
 		async fetchUser({ commit }, user) {
-			const userDocument = await usersCollection.doc(user.uid).get();
+			const usersCollectionRef = usersCollection.doc(user.uid);
+
+			const userDocument = await usersCollectionRef.get();
 			commit('setUser', user);
 			commit('setUserProfile', userDocument.data());
-			
+
+			const notesCollection = await usersCollectionRef.collection('notes').get();
+			notesCollection.docs.map((doc) => {
+				const notes = [];
+				notes.push(doc.data());
+				commit('setNotes', notes);
+			});
+
 			if (
 				router.currentRoute.path === '/sign-in' ||
-				router.currentRoute.path === '/sign-up' || 
+				router.currentRoute.path === '/sign-up' ||
 				router.currentRoute.path === '/forgot-password'
 			) {
 				router.push('/');
@@ -94,7 +106,10 @@ export default new Vuex.Store({
 		},
 	},
 	getters: {
-		userId: state => state.user.uid
+		userId: (state) => state.user.uid,
+		bookmarks: (state) => {
+			return state.userProfile.bookmarks || [];
+		}
 	},
 	modules: {},
 });

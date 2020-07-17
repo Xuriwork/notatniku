@@ -14,7 +14,7 @@
           <span v-on:click="handleBookmark(selectedNote.note, isBookmarked)">
             <BookmarkIcon v-bind:isBookmarked="isBookmarked" />
           </span>
-          <h3>{{ title }}</h3>
+          <h3>{{ selectedNote.note.title }}</h3>
         </div>
         <img
           src="../assets/icons/more-icon.svg"
@@ -23,14 +23,9 @@
           v-on:click="handleModal('more-items')"
         />
       </header>
-      <span v-if="sessionSaved.saved">Saved: {{ dayjs(sessionSaved.timestamp).fromNow() }}</span>
-      <div class="content-container">
-        <CKEditor
-          v-bind:editor="BalloonEditor"
-          v-bind:config="editorConfiguration"
-          v-bind:data="content"
-          v-bind:onchange="handleEditorChange"
-        />
+      <span v-if="sessionSaved.saved">Saved: {{ sessionSaved }}</span>
+      <div class="editor-container">
+        <Editor />
       </div>
     </div>
   </div>
@@ -38,17 +33,19 @@
 
 <script>
 import Sidebar from "../components/Sidebar";
+import Editor from "../components/Editor";
+import BookmarkIcon from "../components/BookmarkIcon";
 import firebase, { usersCollection } from "../utils/firebase";
 
 export default {
   name: "Home",
   components: {
-    Sidebar
+    Sidebar,
+    Editor,
+    BookmarkIcon
   },
   data() {
     return {
-      notes: [],
-      bookmarks: [],
       selectedNoteIndex: 0
     };
   },
@@ -59,8 +56,9 @@ export default {
       console.log(index);
       //return this.selectedNote = this.notes[index];
     },
-    handleBookmark: (note, isBookmarked) => {
-      const { noteId: bookmarkId, name } = note;
+    handleBookmark: function(note, isBookmarked) {
+      const { noteId: bookmarkId, title: name } = note;
+      console.log(bookmarkId, name)
       if (isBookmarked) {
         return usersCollection.doc(this.userId).update({
           bookmarks: firebase.firestore.FieldValue.arrayRemove({
@@ -79,7 +77,13 @@ export default {
   },
   computed: {
     userId: function() {
-      return this.$store.getters.userId
+      return this.$store.getters.userId;
+    },
+    notes: function() {
+      return this.$store.state.notes;
+    },
+    bookmarks: function() {
+      return this.$store.getters.bookmarks;
     },
     selectedNote: function() {
       return {
@@ -92,6 +96,10 @@ export default {
     },
     isBookmarked: function() {
       return this.bookmarksName.includes(this.selectedNote.note.title);
+    },
+    sessionSaved: function() {
+      return { saved: false };
+      //return dayjs(this.sessionSaved.timestamp).fromNow();
     }
   }
 };
@@ -149,36 +157,8 @@ export default {
     }
   }
 
-  .content-container {
-    .title-input {
-      line-height: 50px;
-      font-size: 2em;
-      font-weight: 700;
-      max-width: 100%;
-      width: 100%;
-      white-space: pre-wrap;
-      word-break: break-word;
-      caret-color: #5c5a56;
-      padding: 3px 2px;
-      min-height: 1em;
-      color: rgba(255, 255, 255, 0.9);
-      -webkit-text-fill-color: #5c5a56;
-      cursor: text;
-      box-sizing: border-box;
-      -webkit-user-modify: read-write;
-      overflow-wrap: break-word;
-      -webkit-line-break: after-white-space;
-      line-break: after-white-space;
-      pointer-events: auto;
-    }
-  }
-
-  .ce-block__content {
-    background-color: #bac965 !important;
-
-    .ce-paragraph cdx-block {
-      background-color: #e654e6 !important;
-    }
+  .editor-container {
+    margin-top: 15px;
   }
 }
 </style>

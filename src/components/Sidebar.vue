@@ -59,7 +59,7 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .sidebar-component {
   display: flex;
   flex-direction: column;

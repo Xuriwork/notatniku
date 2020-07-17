@@ -50,12 +50,13 @@ export default {
     },
     handleCreateNote: function() {
       const noteName = this.noteName;
+      const userId = this.$store.getters.userId;
       const slugifiedNoteName = slugify(noteName, { lower: true });
       const dateCreated = new Date();
       const noteId = `${slugifiedNoteName}-${uniqid()}`;
 
       usersCollection
-        .doc(this.userId)
+        .doc(userId)
         .collection("notebooks")
         .doc(noteId)
         .set({
@@ -84,9 +85,6 @@ export default {
         };
       }
       return modalInfo;
-    },
-    userId: function() {
-      return this.$store.getters.userId;
     }
   }
 };

@@ -28,9 +28,8 @@ html, body, #app {
 
 * {
 	margin: 0;
-	padding: 0;
-	list-style: none;
-	text-decoration: none;
+  padding: 0;
+  list-style: none;
 }
 
 [contenteditable] {
@@ -63,6 +62,10 @@ h4,
 p,
 a {
 	color: #5c5a56;
+}
+
+a {
+  text-decoration: none;
 }
 
 .sign-in-component, .sign-up-component, .forgot-password-component {
