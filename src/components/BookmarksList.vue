@@ -6,6 +6,7 @@
       <li
         v-for="bookmark in bookmarks"
         v-bind:key="bookmark.bookmarkId"
+        v-bind:id="bookmark.bookmarkId"
         v-on:click="handleViewChange"
       >
         <img src="../assets/icons/book-icon.svg" alt="Bookmark icon" />

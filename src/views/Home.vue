@@ -53,12 +53,11 @@ export default {
     handleViewChange: function(e) {
       const noteId = e.target.id;
       const index = this.notes.findIndex(note => note.noteId === noteId);
-      console.log(index);
+      console.log(noteId, index);
       //return this.selectedNote = this.notes[index];
     },
     handleBookmark: function(note, isBookmarked) {
       const { noteId: bookmarkId, title: name } = note;
-      console.log(bookmarkId, name)
       if (isBookmarked) {
         return usersCollection.doc(this.userId).update({
           bookmarks: firebase.firestore.FieldValue.arrayRemove({
