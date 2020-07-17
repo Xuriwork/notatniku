@@ -104,6 +104,10 @@ export default {
       text-indent: 20px;
       background-color: transparent;
 
+      &:focus {
+        outline: none;
+      }
+
       &::placeholder {
         color: #c8c5c1;
       }

@@ -6,12 +6,12 @@
         <form v-if="modalType === 'add'">
           <input type="text" v-model="noteName" placeholder="Note name" />
         </form>
-        <ul v-if="modalType === 'trash'" class="trash-list">
+        <ul v-if="modalType === 'trash'" class="trash-list" style="marginTop: 10px">
           <li>Your trash is empty</li>
         </ul>
         <ul v-if="modalType === 'more-items'" class="more-items-list">
           <li>Rename</li>
-          <li style="{color: '#ff5959', fontWeight: 600}">Delete Note</li>
+          <li style="color: '#ff5959'; fontWeight: 600">Delete Note</li>
           <li>Save as a PDF</li>
         </ul>
       </div>
@@ -105,7 +105,9 @@ export default {
 }
 
 .modal {
-  @extend %flex-center-column;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
   width: 400px;
   min-height: 170px;
   padding: 20px;
@@ -117,7 +119,7 @@ export default {
     width: 100%;
 
     h2 {
-      font-size: 1.6em;
+      font-size: 1.4em;
     }
   }
 
@@ -160,13 +162,18 @@ export default {
     margin-top: 10px;
 
     button:nth-child(2) {
-      background-color: #f89b5e;
-      color: #fff;
       margin-left: 20px;
+      color: #fff;
+      background: linear-gradient(.31deg,#f89b5e .7%,#f7b284 99.3%);
+      box-shadow: 0 3px 6px rgba(107, 62, 19, 0.15);
 
       &:hover {
-        background-color: #fcb07e;
+        background: linear-gradient(.31deg,#f89b5e 20.7%,#f7b284 99.3%);
       }
+    }
+
+    .cancel-button {
+      background: linear-gradient(.31deg,#e2e2e2 .7%,#ececec 99.3%);
     }
 
     button {
