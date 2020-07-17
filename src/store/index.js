@@ -26,7 +26,6 @@ export default new Vuex.Store({
 			state.errors = payload;
 		},
 		setModalType(state, payload) {
-			console.log(payload);
 			state.modalType = payload;
 		}
 	},

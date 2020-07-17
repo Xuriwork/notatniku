@@ -42,7 +42,6 @@ export default {
   },
   methods: {
     closeModal: function(e) {
-      console.log(e.target);
       const modalOverlay = document.getElementById("modal-overlay");
       const cancelButton = document.querySelector(".cancel-button");
       if (e.target === modalOverlay || e.target === cancelButton) {
@@ -51,10 +50,8 @@ export default {
     },
     handleCreateNote: function() {
       const noteName = this.noteName;
-
       const slugifiedNoteName = slugify(noteName, { lower: true });
       const dateCreated = new Date();
-
       const noteId = `${slugifiedNoteName}-${uniqid()}`;
 
       usersCollection
