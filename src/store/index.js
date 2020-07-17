@@ -10,15 +10,25 @@ Vue.use(Vuex);
 export default new Vuex.Store({
 	state: {
 		user: {},
+		userProfile: {},
 		errors: {},
+		notes: [],
+		modalType: null
 	},
 	mutations: {
 		setUser(state, payload) {
 			state.user = payload;
 		},
+		setUserProfile(state, payload) {
+			state.userProfile = payload;
+		},
 		setErrors(state, payload) {
 			state.errors = payload;
 		},
+		setModalType(state, payload) {
+			console.log(payload);
+			state.modalType = payload;
+		}
 	},
 	actions: {
 		async signIn({ dispatch }, data) {
@@ -37,14 +47,13 @@ export default new Vuex.Store({
 			dispatch('fetchUser', user);
 		},
 		async signUp({ dispatch }, data) {
-			const dateCreated = new Date();
 			const { user } = await auth
 				.createUserWithEmailAndPassword(data.email, data.password)
 				.then((data) => {
 					data.user.updateProfile({ displayName: data.name });
 					usersCollection.doc(user.uid).set({
 						name: data.name,
-						dateCreated,
+						dateCreated: new Date(),
 					});
 				})
 				.catch((error) => {
@@ -73,14 +82,20 @@ export default new Vuex.Store({
 		},
 		async fetchUser({ commit }, user) {
 			const userDocument = await usersCollection.doc(user.uid).get();
-			commit('setUser', userDocument.data());
+			commit('setUser', user);
+			commit('setUserProfile', userDocument.data());
+			
 			if (
 				router.currentRoute.path === '/sign-in' ||
-				router.currentRoute.path === '/sign-up'
+				router.currentRoute.path === '/sign-up' || 
+				router.currentRoute.path === '/forgot-password'
 			) {
 				router.push('/');
 			}
 		},
+	},
+	getters: {
+		userId: state => state.user.uid
 	},
 	modules: {},
 });

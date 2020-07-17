@@ -3,9 +3,16 @@ import App from './App.vue';
 import './registerServiceWorker';
 import router from './router';
 import store from './store';
+import { auth } from './utils/firebase';
+
+import Fragment from 'vue-fragment';
+import axios from 'axios';
 
 import 'notyf/notyf.min.css';
-import { auth } from './utils/firebase';
+
+axios.defaults.baseURL = 'https://us-central1-notatniku.cloudfunctions.net/api';
+
+Vue.use(Fragment.Plugin);
 
 Vue.config.productionTip = false;
 
@@ -18,8 +25,6 @@ auth.onAuthStateChanged((user) => {
       render: h => h(App)
     }).$mount('#app');
   }
-
-  console.log(user)
 
   if (user) store.dispatch('fetchUser', user);
 });

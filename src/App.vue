@@ -1,6 +1,24 @@
 <template>
-  <router-view/>
+  <fragment>
+    <Modal v-if="modalType" v-bind:modalType="modalType" />
+    <router-view/>
+  </fragment>
 </template>
+
+<script>
+import Modal from './components/Modal';
+
+export default {
+  components: {
+    Modal
+  },
+  computed: {
+    modalType: function() {
+      return this.$store.state.modalType;
+    }
+  }
+}
+</script>
 
 <style lang="scss">
 html, body, #app {
@@ -45,13 +63,6 @@ h4,
 p,
 a {
 	color: #5c5a56;
-}
-
-%flex-center-column {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
 }
 
 .sign-in-component, .sign-up-component, .forgot-password-component {
@@ -142,4 +153,11 @@ a {
     }
   }
 }
+
+@media (max-width: 1100px) {
+	.background-image-container {
+		display: none;
+	}
+}
+
 </style>
