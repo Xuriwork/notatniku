@@ -18,7 +18,10 @@
       <div class="modal-bottom">
         <div>
           <button class="cancel-button" v-on:click="closeModal">Cancel</button>
-          <button v-if="modalInfo.button" v-on:click="handleCreateNote">{{ modalInfo.button }}</button>
+          <button
+            v-if="modalInfo.button"
+            v-on="{click: modalInfo.button === 'Create Note' ? handleCreateNote : null}"
+          >{{ modalInfo.button }}</button>
         </div>
       </div>
     </div>
@@ -57,13 +60,17 @@ export default {
 
       usersCollection
         .doc(userId)
-        .collection("notebooks")
+        .collection("notes")
         .doc(noteId)
         .set({
-          name: noteName,
+          title: noteName,
           noteId,
-          dateCreated
-        });
+          dateCreated,
+          content: ""
+        })
+        .then(() => this.$store.commit("setModalType", null))
+        .catch(error => console.error(error));
+        //TODO: RESET FORM
     }
   },
   computed: {
@@ -162,16 +169,16 @@ export default {
     button:nth-child(2) {
       margin-left: 20px;
       color: #fff;
-      background: linear-gradient(.31deg,#f89b5e .7%,#f7b284 99.3%);
+      background: linear-gradient(0.31deg, #f89b5e 0.7%, #f7b284 99.3%);
       box-shadow: 0 3px 6px rgba(107, 62, 19, 0.15);
 
       &:hover {
-        background: linear-gradient(.31deg,#f89b5e 20.7%,#f7b284 99.3%);
+        background: linear-gradient(0.31deg, #f89b5e 20.7%, #f7b284 99.3%);
       }
     }
 
     .cancel-button {
-      background: linear-gradient(.31deg,#e2e2e2 .7%,#ececec 99.3%);
+      background: linear-gradient(0.31deg, #e2e2e2 0.7%, #ececec 99.3%);
     }
 
     button {

@@ -9,6 +9,7 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
 	state: {
+		loading: true,
 		user: {},
 		userProfile: {},
 		errors: {},
@@ -16,6 +17,9 @@ export default new Vuex.Store({
 		modalType: null,
 	},
 	mutations: {
+		setLoading(state, payload) {
+			state.loading = payload;
+		},
 		setUser(state, payload) {
 			state.user = payload;
 		},
@@ -70,6 +74,11 @@ export default new Vuex.Store({
 				});
 			dispatch('fetchUser', user);
 		},
+		async handleSignOut({ commit }) {
+			await auth.signOut()
+			.then(() => router.push('/'))
+			.catch((error) => commit('setErrors', error));
+		},
 		async handleForgotPassword(_, email) {
 			await auth.sendPasswordResetEmail(email);
 		},
@@ -81,11 +90,12 @@ export default new Vuex.Store({
 			commit('setUserProfile', userDocument.data());
 
 			const notesCollection = await usersCollectionRef.collection('notes').get();
+			const notes = [];
 			notesCollection.docs.map((doc) => {
-				const notes = [];
 				notes.push(doc.data());
 				commit('setNotes', notes);
 			});
+			commit('setLoading', false);
 
 			if (
 				router.currentRoute.path === '/sign-in' ||
@@ -94,13 +104,16 @@ export default new Vuex.Store({
 			) {
 				router.push('/');
 			}
+
 		},
 	},
 	getters: {
+		loading: (state) => state.loading,
+		user: (state) => state.user,
 		userId: (state) => state.user.uid,
-		bookmarks: (state) => {
-			return state.userProfile.bookmarks || [];
-		}
+		notes: (state) => state.notes,
+		bookmarks: (state) => state.userProfile.bookmarks || [],
+		modalType: (state) => state.modalType,
 	},
 	modules: {},
 });

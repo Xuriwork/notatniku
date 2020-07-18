@@ -1,37 +1,41 @@
 <template>
-  <div class="home-component">
-    <Sidebar
-      v-bind:notes="notes"
-      v-bind:bookmarks="bookmarks"
-      v-bind:selectedNote="selectedNote"
-      v-bind:selectedNoteIndex="selectedNoteIndex"
-      v-bind:handleViewChange="handleViewChange"
-    />
-    <div class="no-notes-screen" v-if="notes.length === 0">You have 0 notes</div>
-    <div class="home-view-container" v-else>
-      <header>
-        <div>
-          <span v-on:click="handleBookmark(selectedNote.note, isBookmarked)">
-            <BookmarkIcon v-bind:isBookmarked="isBookmarked" />
-          </span>
-          <h3>{{ selectedNote.note.title }}</h3>
+  <fragment>
+    <Loading v-if="loading" />
+    <div v-if="!loading" class="home-component">
+      <Sidebar
+        v-bind:notes="notes"
+        v-bind:bookmarks="bookmarks"
+        v-bind:selectedNote="selectedNote"
+        v-bind:selectedNoteIndex="selectedNoteIndex"
+        v-bind:handleViewChange="handleViewChange"
+      />
+      <div class="no-notes-screen" v-if="notes.length === 0">You have 0 notes</div>
+      <div class="home-view-container" v-else>
+        <header>
+          <div>
+            <span v-on:click="handleBookmark(selectedNote.note, isBookmarked)">
+              <BookmarkIcon v-bind:isBookmarked="isBookmarked" />
+            </span>
+            <h3>{{ selectedNote.note.title }}</h3>
+          </div>
+          <img
+            src="../assets/icons/more-icon.svg"
+            alt
+            class="more-items-button"
+            v-on:click="handleModal('more-items')"
+          />
+        </header>
+        <span v-if="sessionSaved.saved">Saved: {{ sessionSaved }}</span>
+        <div class="editor-container">
+          <Editor v-bind:content_PROP="selectedNote.note.content" />
         </div>
-        <img
-          src="../assets/icons/more-icon.svg"
-          alt
-          class="more-items-button"
-          v-on:click="handleModal('more-items')"
-        />
-      </header>
-      <span v-if="sessionSaved.saved">Saved: {{ sessionSaved }}</span>
-      <div class="editor-container">
-        <Editor />
       </div>
     </div>
-  </div>
+  </fragment>
 </template>
 
 <script>
+import Loading from "../components/Loading";
 import Sidebar from "../components/Sidebar";
 import Editor from "../components/Editor";
 import BookmarkIcon from "../components/BookmarkIcon";
@@ -40,6 +44,7 @@ import firebase, { usersCollection } from "../utils/firebase";
 export default {
   name: "Home",
   components: {
+    Loading,
     Sidebar,
     Editor,
     BookmarkIcon
@@ -75,11 +80,14 @@ export default {
     }
   },
   computed: {
+    loading: function() {
+      return this.$store.getters.loading;
+    },
     userId: function() {
       return this.$store.getters.userId;
     },
     notes: function() {
-      return this.$store.state.notes;
+      return this.$store.getters.notes;
     },
     bookmarks: function() {
       return this.$store.getters.bookmarks;

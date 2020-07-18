@@ -14,7 +14,7 @@ export default {
   },
   computed: {
     modalType: function() {
-      return this.$store.state.modalType;
+      return this.$store.getters.modalType;
     }
   }
 }
@@ -52,7 +52,8 @@ input {
 }
 
 button {
-	cursor: pointer;
+  cursor: pointer;
+  font-family: Quicksand;
 }
 
 h1,

@@ -10,21 +10,26 @@ import { VueEditor } from "vue2-editor";
 
 export default {
   components: { VueEditor },
-  data: () => ({
-    content: "",
-    customToolbar: [
-      [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
-      [{ 'font': [] }],
-      ["bold", "italic", "underline", "strike"],
-      ["align", { align: "center" }, { align: "right" }, { align: "justify" } ],
-      ["blockquote", "code-block"],
-      [{ list: "ordered" }, { list: "bullet" }],
-      [{ indent: '-1' }, { indent: '+1' }],
-      ["color", "background"],
-      ["link", "image", "video"],
-      ["clean"]
-    ]
-  }),
+  props: {
+    content_PROP: String
+  },
+  data() {
+    return {
+      content: this.content_PROP,
+      customToolbar: [
+        [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+        [{ 'font': [] }],
+        ["bold", "italic", "underline", "strike"],
+        ["align", { align: "center" }, { align: "right" }, { align: "justify" } ],
+        ["blockquote", "code-block"],
+        [{ list: "ordered" }, { list: "bullet" }],
+        [{ indent: '-1' }, { indent: '+1' }],
+        ["color", "background"],
+        ["link", "image", "video"],
+        ["clean"]
+      ]
+    };
+  },
   methods: {
     handleSave: function() {
       console.log(this.content);

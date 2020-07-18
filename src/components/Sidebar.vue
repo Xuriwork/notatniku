@@ -1,11 +1,19 @@
 <template>
   <div class="sidebar-component">
-    <div class="sidebar-top">
+    <div class="sidebar-top" v-on:click="toggleDropdown">
       <img src="../assets/icons/notatniku-logo.svg" alt="logo" class="logo" />
       <div>
         <h3>{{ name }}</h3>
         <span>{{ email }}</span>
       </div>
+    </div>
+    <div class="user-dropdown" v-show="dropdownOpen">
+      <div class="user-info-div">
+        <div>{{ name.charAt(0) }}</div>
+        <h5>{{ name }}</h5>
+      </div>
+      <hr />
+      <button>Sign out ({{ email }})</button>
     </div>
     <div class="search-input-container">
       <img src="../assets/icons/search.svg" alt="Search icon" />
@@ -17,13 +25,13 @@
       v-bind:notes="notes"
       v-bind:selectedNoteIndex="selectedNoteIndex"
     />
-    <div class="trash-item-container" v-on:click="handleModal('trash')">
-      <img src="../assets/icons/delete-bin-icon.svg" alt="Trashcan icon" />
-      <span>Trash</span>
-    </div>
     <div class="add-note-container" v-on:click="handleModal('add')">
       <img src="../assets/icons/add-icon.svg" alt="Add icon" />
       <span>Add Note</span>
+    </div>
+    <div class="trash-item-container" v-on:click="handleModal('trash')">
+      <img src="../assets/icons/delete-bin-icon.svg" alt="Trashcan icon" />
+      <span>Trash</span>
     </div>
   </div>
 </template>
@@ -47,13 +55,17 @@ export default {
   data() {
     return {
       searchInput: "",
-      name: "",
-      email: ""
+      dropdownOpen: false,
+      name: this.$store.getters.user.displayName,
+      email: this.$store.getters.user.email
     };
   },
   methods: {
     handleModal: function(type) {
-      this.$store.commit('setModalType', type);
+      this.$store.commit("setModalType", type);
+    },
+    toggleDropdown: function() {
+      this.dropdownOpen = !this.dropdownOpen;
     }
   }
 };
@@ -70,9 +82,78 @@ export default {
   padding: 35px 30px;
   box-sizing: border-box;
 
+  .user-dropdown {
+    position: absolute;
+    top: 100px;
+    background-color: #fcedcf;
+    border-radius: 5px;
+    width: 240px;
+    z-index: 2;
+    padding: 5px 0;
+    animation: show 0.5s;
+
+    @keyframes show {
+      from {
+        opacity: 0;
+        top: 85px;
+      }
+      to {
+        opacity: 1;
+        top: 100px;
+      }
+    }
+
+    .user-info-div {
+      display: flex;
+      align-items: center;
+      padding: 10px;
+
+      h5 {
+        font-size: 1em;
+        font-weight: 500;
+        margin-left: 5px;
+      }
+
+      > div {
+        width: 25px;
+        height: 25px;
+        line-height: 25px;
+        border-radius: 5px;
+        background-color: #f0ad8c;
+        text-align: center;
+        color: #fff;
+      }
+    }
+
+    button {
+      width: 100%;
+      background: transparent;
+      text-align: left;
+      padding: 10px;
+
+      &:hover {
+        background-color: #fff6e3;
+      }
+    }
+
+    hr {
+      margin-bottom: 4px;
+      border: none;
+      border-bottom: 0.5px #dac8a4 solid;
+    }
+  }
+
   .sidebar-top {
     display: flex;
     margin-bottom: 40px;
+    cursor: pointer;
+    padding: 10px;
+    border-radius: 5px;
+    user-select: none;
+
+    &:hover {
+      background-color: #fdbc715e;
+    }
 
     img {
       width: 40px;
@@ -163,11 +244,8 @@ export default {
     }
   }
 
-  .trash-item-container {
-    margin-bottom: 30px;
-  }
-
   .add-note-container {
+    margin-bottom: 30px;
     color: #e79166;
   }
 
