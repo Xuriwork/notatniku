@@ -75,26 +75,30 @@ export default new Vuex.Store({
 			dispatch('fetchUser', user);
 		},
 		async handleSignOut({ commit }) {
-			await auth.signOut()
-			.then(() => router.push('/'))
-			.catch((error) => commit('setErrors', error));
+			await auth
+				.signOut()
+				.then(() => router.push('/'))
+				.catch((error) => commit('setErrors', error));
 		},
 		async handleForgotPassword(_, email) {
 			await auth.sendPasswordResetEmail(email);
 		},
 		async fetchUser({ commit }, user) {
 			const usersCollectionRef = usersCollection.doc(user.uid);
-
-			const userDocument = await usersCollectionRef.get();
-			commit('setUser', user);
-			commit('setUserProfile', userDocument.data());
-
-			const notesCollection = await usersCollectionRef.collection('notes').get();
-			const notes = [];
-			notesCollection.docs.map((doc) => {
-				notes.push(doc.data());
-				commit('setNotes', notes);
+			await usersCollectionRef.onSnapshot((snapshot) => {
+				commit('setUserProfile', snapshot.data());
 			});
+			commit('setUser', user);
+
+			await usersCollectionRef.collection('notes').onSnapshot(
+				(snapshot) => {
+					const notes = [];
+					snapshot.forEach((doc) => notes.push(doc.data()));
+					commit('setNotes', notes);
+				},
+				(error) => console.error(error)
+			);
+
 			commit('setLoading', false);
 
 			if (
@@ -104,7 +108,6 @@ export default new Vuex.Store({
 			) {
 				router.push('/');
 			}
-
 		},
 	},
 	getters: {

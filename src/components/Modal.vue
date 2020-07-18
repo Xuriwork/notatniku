@@ -70,7 +70,6 @@ export default {
         })
         .then(() => this.$store.commit("setModalType", null))
         .catch(error => console.error(error));
-        //TODO: RESET FORM
     }
   },
   computed: {
