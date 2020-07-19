@@ -23,7 +23,7 @@
     <NotesList
       v-bind:handleViewChange="handleViewChange"
       v-bind:notes="notes"
-      v-bind:selectedNoteIndex="selectedNoteIndex"
+      v-bind:selectedNoteIndex="selectedNote.index"
     />
     <div class="add-note-container" v-on:click="handleModal('add')">
       <img src="../assets/icons/add-icon.svg" alt="Add icon" />
@@ -49,8 +49,8 @@ export default {
   props: {
     notes: Array,
     bookmarks: Array,
-    selectedNoteIndex: Number,
-    handleViewChange: Function
+    handleViewChange: Function,
+    selectedNote: Object
   },
   data() {
     return {

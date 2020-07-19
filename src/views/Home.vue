@@ -6,7 +6,6 @@
         v-bind:notes="notes"
         v-bind:bookmarks="bookmarks"
         v-bind:selectedNote="selectedNote"
-        v-bind:selectedNoteIndex="selectedNoteIndex"
         v-bind:handleViewChange="handleViewChange"
       />
       <div class="no-notes-screen" v-if="notes.length === 0">You have 0 notes</div>
@@ -49,17 +48,12 @@ export default {
     Editor,
     BookmarkIcon
   },
-  data() {
-    return {
-      selectedNoteIndex: 0
-    };
-  },
   methods: {
     handleViewChange: function(e) {
       const noteId = e.target.id;
       const index = this.notes.findIndex(note => note.noteId === noteId);
-      console.log(noteId, index);
-      //return this.selectedNote = this.notes[index];
+      const selectedNote = { note: this.notes[index], index };
+      return this.$store.commit("setSelectedNote", selectedNote);
     },
     handleBookmark: function(note, isBookmarked) {
       const { noteId: bookmarkId, title: name } = note;
@@ -93,10 +87,7 @@ export default {
       return this.$store.getters.bookmarks;
     },
     selectedNote: function() {
-      return {
-        note: this.notes.length === 0 ? [] : this.notes[0],
-        index: 0
-      };
+      return this.$store.getters.selectedNote;
     },
     bookmarksName: function() {
       return this.bookmarks.map(bookmark => bookmark.name);

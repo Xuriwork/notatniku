@@ -14,6 +14,10 @@ export default new Vuex.Store({
 		userProfile: {},
 		errors: {},
 		notes: [],
+		selectedNote: {
+			note: [],
+			index: 0,
+		},
 		modalType: null,
 	},
 	mutations: {
@@ -28,6 +32,10 @@ export default new Vuex.Store({
 		},
 		setNotes(state, payload) {
 			state.notes = payload;
+			console.log(payload);
+		},
+		setSelectedNote(state, payload) {
+			state.selectedNote = payload;
 		},
 		setErrors(state, payload) {
 			state.errors = payload;
@@ -95,6 +103,10 @@ export default new Vuex.Store({
 					const notes = [];
 					snapshot.forEach((doc) => notes.push(doc.data()));
 					commit('setNotes', notes);
+					commit('setSelectedNote', {
+						note: notes.length === 0 ? [] : notes[0],
+						index: 0,
+					});
 				},
 				(error) => console.error(error)
 			);
@@ -115,6 +127,7 @@ export default new Vuex.Store({
 		user: (state) => state.user,
 		userId: (state) => state.user.uid,
 		notes: (state) => state.notes,
+		selectedNote: (state) => state.selectedNote,
 		bookmarks: (state) => state.userProfile.bookmarks || [],
 		modalType: (state) => state.modalType,
 	},
