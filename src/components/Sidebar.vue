@@ -50,6 +50,7 @@ export default {
     notes: Array,
     bookmarks: Array,
     handleViewChange: Function,
+    handleModal: Function,
     selectedNote: Object
   },
   data() {
@@ -61,9 +62,6 @@ export default {
     };
   },
   methods: {
-    handleModal: function(type) {
-      this.$store.commit("setModalType", type);
-    },
     toggleDropdown: function() {
       this.dropdownOpen = !this.dropdownOpen;
     }
@@ -213,7 +211,8 @@ export default {
   }
 
   .bookmarks-list-container,
-  .notes-list-container {
+  .notes-list-container,
+  .trash-list-container {
     margin-bottom: 25px;
 
     li {

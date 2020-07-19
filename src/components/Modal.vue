@@ -6,13 +6,23 @@
         <form v-if="modalType === 'add'">
           <input type="text" v-model="noteName" placeholder="Note name" />
         </form>
-        <ul v-if="modalType === 'trash'" class="trash-list" style="marginTop: 10px">
-          <li>Your trash is empty</li>
-        </ul>
+        <div v-if="modalType === 'trash'" class="trash-list" style="marginTop: 10px">
+          <span v-if="trash.length === 0">Your trash is empty</span>
+          <ul v-else>
+            <li v-for="note in trash" v-bind:key="note.noteId">
+              <span>{{ note.title }}</span>
+              <button v-bind:id="note.noteId" v-on:click="handleRemoveFromTrash">Cancel delete</button>
+              <button v-bind:id="note.noteId" v-on:click="handleDeleteNote">Delete</button>
+            </li>
+          </ul>
+        </div>
         <ul v-if="modalType === 'more-items'" class="more-items-list">
-          <li>Rename</li>
-          <li style="color: '#ff5959'; fontWeight: 600">Delete Note</li>
           <li>Save as a PDF</li>
+          <li
+            class="add-to-trash-button"
+            v-bind:id="selectedNote.note.noteId"
+            v-on:click="handleAddToTrash"
+          >Add to trash</li>
         </ul>
       </div>
       <div class="modal-bottom">
@@ -66,10 +76,50 @@ export default {
           title: noteName,
           noteId,
           dateCreated,
-          content: ""
+          content: "",
+          isTrash: false
         })
         .then(() => this.$store.commit("setModalType", null))
         .catch(error => console.error(error));
+    },
+    handleAddToTrash: async function(e) {
+      const userId = this.$store.getters.userId;
+      const noteId = e.target.id;
+
+      await usersCollection
+        .doc(userId)
+        .collection("notes")
+        .doc(noteId)
+        .update({ isTrash: true })
+        .then(() => this.$store.commit("setModalType", null))
+        .catch(error => console.error(error));
+    },
+    handleRemoveFromTrash: function(e) {
+      const userId = this.$store.getters.userId;
+      const noteId = e.target.id;
+
+      usersCollection
+        .doc(userId)
+        .collection("notes")
+        .doc(noteId)
+        .update({ isTrash: false })
+        .catch(error => console.error(error));
+
+      console.log("Weird");
+    },
+    handleDeleteNote: async function(e) {
+      const userId = this.$store.getters.userId;
+      const noteId = e.target.id;
+
+      if (confirm("Are you sure you want to delete this note?")) {
+        await usersCollection
+          .doc(userId)
+          .collection("notes")
+          .doc(noteId)
+          .delete()
+          .then(() => this.$store.commit("setModalType", null))
+          .catch(error => console.error(error));
+      }
     }
   },
   computed: {
@@ -91,6 +141,12 @@ export default {
         };
       }
       return modalInfo;
+    },
+    selectedNote: function() {
+      return this.$store.getters.selectedNote;
+    },
+    trash: function() {
+      return this.$store.getters.trash;
     }
   }
 };
@@ -135,7 +191,7 @@ export default {
     }
 
     li:not(:last-of-type) {
-      margin-bottom: 6px;
+      margin-bottom: 5px;
     }
   }
 
@@ -185,10 +241,72 @@ export default {
       border-radius: 4px;
     }
   }
+
+  .add-to-trash-button {
+    color: #ffffff;
+    background-color: #ff5959;
+    display: inline-block;
+    padding: 4px 15px;
+    border-radius: 4px;
+    font-weight: 500;
+  }
 }
 
-.modal-more-items {
-  width: 350px;
-  padding: 30px 40px;
+.modal-trash {
+  max-width: 550px;
+  width: 100%;
+}
+
+.trash-list {
+  li {
+    overflow-y: hidden;
+    display: flex;
+    align-items: center;
+
+    &:not(:last-of-type) {
+      margin-bottom: 4px;
+    }
+
+    span {
+      cursor: pointer;
+      font-weight: 500;
+      max-width: 200px;
+
+      &:hover {
+        color: #f04c4c;
+      }
+    }
+
+    button {
+      border: 1px solid transparent;
+    }
+
+    button:first-of-type {
+      border: 1px solid #40514e;
+      color: #40514e;
+      background: #fff;
+      padding: 4px 15px;
+      border-radius: 4px;
+      margin-left: auto;
+      margin-right: 10px;
+      box-sizing: border-box;
+
+      &:hover {
+        color: #ffffff;
+        background: #40514e;
+      }
+    }
+
+    button:last-of-type {
+      background-color: #ff5959;
+      color: #ffffff;
+      padding: 4px 15px;
+      border-radius: 4px;
+
+      &:hover {
+        background: #ff4b4b;
+      }
+    }
+  }
 }
 </style>

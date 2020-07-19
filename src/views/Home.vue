@@ -7,6 +7,7 @@
         v-bind:bookmarks="bookmarks"
         v-bind:selectedNote="selectedNote"
         v-bind:handleViewChange="handleViewChange"
+        v-bind:handleModal="handleModal"
       />
       <div class="no-notes-screen" v-if="notes.length === 0">You have 0 notes</div>
       <div class="home-view-container" v-else>
@@ -49,6 +50,9 @@ export default {
     BookmarkIcon
   },
   methods: {
+    handleModal: function(type) {
+      this.$store.commit("setModalType", type);
+    },
     handleViewChange: function(e) {
       const noteId = e.target.id;
       const index = this.notes.findIndex(note => note.noteId === noteId);
@@ -117,14 +121,6 @@ export default {
     padding: 40px;
     box-sizing: border-box;
     width: 100%;
-
-    button {
-      background-color: #f89b5e;
-      color: #fff;
-      padding: 5px 25px;
-      border-radius: 5px;
-      margin-top: 10px;
-    }
   }
 
   header {

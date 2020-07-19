@@ -14,6 +14,7 @@ export default new Vuex.Store({
 		userProfile: {},
 		errors: {},
 		notes: [],
+		trash: [],
 		selectedNote: {
 			note: [],
 			index: 0,
@@ -32,7 +33,9 @@ export default new Vuex.Store({
 		},
 		setNotes(state, payload) {
 			state.notes = payload;
-			console.log(payload);
+		},
+		setTrash(state, payload) {
+			state.trash = payload;
 		},
 		setSelectedNote(state, payload) {
 			state.selectedNote = payload;
@@ -98,18 +101,24 @@ export default new Vuex.Store({
 			});
 			commit('setUser', user);
 
-			await usersCollectionRef.collection('notes').onSnapshot(
-				(snapshot) => {
-					const notes = [];
-					snapshot.forEach((doc) => notes.push(doc.data()));
-					commit('setNotes', notes);
-					commit('setSelectedNote', {
-						note: notes.length === 0 ? [] : notes[0],
-						index: 0,
-					});
-				},
-				(error) => console.error(error)
-			);
+			await usersCollectionRef
+				.collection('notes')
+				.onSnapshot(
+					(snapshot) => {
+						const notes = [];
+						snapshot.forEach((doc) => notes.push(doc.data()));
+						const filteredNotes = notes.filter(note => note.isTrash == false);
+						commit('setNotes', filteredNotes);
+						commit('setSelectedNote', {
+							note: notes.length === 0 ? [] : notes[0],
+							index: 0,
+						});
+
+						const trash = notes.filter(note => note.isTrash == true);
+						commit('setTrash', trash);
+					},
+					(error) => console.error(error)
+				);
 
 			commit('setLoading', false);
 
@@ -127,6 +136,7 @@ export default new Vuex.Store({
 		user: (state) => state.user,
 		userId: (state) => state.user.uid,
 		notes: (state) => state.notes,
+		trash: (state) => state.trash,
 		selectedNote: (state) => state.selectedNote,
 		bookmarks: (state) => state.userProfile.bookmarks || [],
 		modalType: (state) => state.modalType,
