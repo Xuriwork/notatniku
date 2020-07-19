@@ -1,7 +1,7 @@
 <template>
   <fragment>
-  <button v-on:click="handleSave" class="save-button">Save note</button>
-  <vue-editor v-model="content" v-bind:editor-toolbar="customToolbar" class="editor" />
+    <button v-on:click="handleSave" class="save-button">Save note</button>
+    <vue-editor v-model="content" v-bind:editor-toolbar="customToolbar" class="editor" />
   </fragment>
 </template>
 

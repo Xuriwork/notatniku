@@ -27,7 +27,7 @@
         </header>
         <span v-if="sessionSaved.saved">Saved: {{ sessionSaved }}</span>
         <div class="editor-container">
-          <Editor v-bind:content_PROP="selectedNote.note.content" />
+          <Editor v-bind:content_PROP="selectedNote.note.content" v-bind:key="selectedNote.note.noteId" />
         </div>
       </div>
     </div>
