@@ -25,7 +25,7 @@
           />
         </header>
         <div class="data-state-container">
-          <span v-if="state === 'synced' && sessionSavedAt">Synced at {{ sessionSavedAt }}</span>
+          <span v-if="state === 'synced' && sessionSavedAt" style="color: #23d18c; font-weight: 500">Synced at {{ sessionSavedAt }}</span>
           <span v-else-if="state === 'modified'">Data changed, and will sync</span>
           <span v-else-if="state === 'revoked'">Data revoked to original data</span>
           <span v-else-if="state === 'error'">Failed to save data. {{ errorMessage }}</span>
