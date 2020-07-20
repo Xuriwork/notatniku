@@ -25,15 +25,23 @@
           />
         </header>
         <div class="data-state-container">
-          <span v-if="state === 'synced' && sessionSavedAt" style="color: #23d18c; font-weight: 500">Synced at {{ sessionSavedAt }}</span>
+          <span v-if="state === 'synced' && sessionSavedAt" class="synced-state">
+            <img src="../assets/icons/cloud-icon.svg" alt="cloud icon" />
+            Synced at {{ sessionSavedAt }}
+          </span>
           <span v-else-if="state === 'modified'">Data changed, and will sync</span>
           <span v-else-if="state === 'revoked'">Data revoked to original data</span>
-          <span v-else-if="state === 'error'">Failed to save data. {{ errorMessage }}</span>
-          <span v-else-if="state === 'loading'">Loading...</span>
+          <span
+            v-else-if="state === 'error'"
+            style="color: #ff5959; font-weight: 600"
+          >Failed to save data. {{ errorMessage }}</span>
+          <span v-else-if="state === 'loading'" class="loading-state">
+            <div class="loading-div"></div>Loading...
+          </span>
         </div>
         <div class="editor-container">
           <Editor
-            v-bind:initialContent="initialContent"
+            v-bind:initialContent="computedNoteData.content"
             v-bind:key="selectedNote.note.noteId"
             v-bind:fieldUpdate="fieldUpdate"
           />
@@ -153,9 +161,6 @@ export default {
     }, 1500)
   },
   computed: {
-    loading: function() {
-      return this.$store.getters.loading;
-    },
     userId: function() {
       return this.$store.getters.userId;
     },
@@ -168,14 +173,19 @@ export default {
     selectedNote: function() {
       return this.$store.getters.selectedNote;
     },
-    bookmarksName: function() {
-      return this.bookmarks.map(bookmark => bookmark.name);
-    },
     isBookmarked: function() {
-      return this.bookmarksName.includes(this.selectedNote.note.title);
+      const bookmarksName = this.bookmarks.map(bookmark => bookmark.name);
+      return bookmarksName.includes(this.selectedNote.note.title);
     },
-    initialContent: function() {
-      return this.selectedNote.note.content;
+    computedNoteData: {
+      get: function() {
+        return {
+          content: this.selectedNote.note.content
+        };
+      },
+      set: function(data) {
+        return (this.noteData = data);
+      }
     }
   }
 };
@@ -227,6 +237,65 @@ export default {
 
   .data-state-container {
     margin-top: 10px;
+
+    .synced-state {
+      color: #23d18c;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+
+      img {
+        width: 24px;
+        margin-right: 5px;
+      }
+    }
+
+    .loading-state {
+      display: flex;
+      align-items: center;
+
+      .loading-div {
+        margin-right: 12px;
+        position: relative;
+        width: 1.4em;
+        height: 1.4em;
+        border: 3px solid #e79166;
+        overflow: hidden;
+        animation: spin 3s ease infinite;
+        box-sizing: border-box;
+        border-radius: 5px;
+      }
+
+      .loading-div::before {
+        content: "";
+        position: absolute;
+        top: -3px;
+        left: -3px;
+        width: 1.4em;
+        height: 1.4em;
+        background-color: rgba(243, 180, 98, 0.65);
+        transform-origin: center bottom;
+        transform: scaleY(1);
+        animation: fill 3s linear infinite;
+      }
+
+      @keyframes spin {
+        50%,
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      @keyframes fill {
+        25%,
+        50% {
+          transform: scaleY(0);
+        }
+        100% {
+          transform: scaleY(1);
+        }
+      }
+    }
   }
 
   .editor-container {
