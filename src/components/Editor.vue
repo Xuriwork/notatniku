@@ -1,5 +1,10 @@
 <template>
-  <vue-editor v-model="content" v-bind:editor-toolbar="customToolbar" class="editor" @input="fieldUpdate" />
+  <vue-editor
+    v-model="content"
+    v-bind:editor-toolbar="customToolbar"
+    class="editor"
+    v-on:input="updateNoteContent"
+  />
 </template>
 
 <script>
@@ -9,19 +14,24 @@ export default {
   components: { VueEditor },
   props: {
     initialContent: String,
-    fieldUpdate: Function
+    updateNoteContent: Function
   },
   data() {
     return {
       content: this.initialContent,
       customToolbar: [
-        [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
-        [{ 'font': [] }],
+        [{ header: [1, 2, 3, 4, 5, 6, false] }],
+        [{ font: [] }],
         ["bold", "italic", "underline", "strike"],
-        ["align", { align: "center" }, { align: "right" }, { align: "justify" } ],
+        [
+          "align",
+          { align: "center" },
+          { align: "right" },
+          { align: "justify" }
+        ],
         ["blockquote", "code-block"],
         [{ list: "ordered" }, { list: "bullet" }],
-        [{ indent: '-1' }, { indent: '+1' }],
+        [{ indent: "-1" }, { indent: "+1" }],
         ["color", "background"],
         ["link", "image", "video"],
         ["clean"]
@@ -34,6 +44,6 @@ export default {
 <style lang="scss" scoped>
 .editor {
   text-decoration: initial !important;
-	text-decoration: underline;
+  text-decoration: underline;
 }
 </style>

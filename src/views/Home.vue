@@ -15,8 +15,7 @@
             <span v-on:click="handleBookmark(selectedNote.note, isBookmarked)">
               <BookmarkIcon v-bind:isBookmarked="isBookmarked" />
             </span>
-            <h3>{{ selectedNote.note.title }}</h3>
-            <input type='text' v-bind:value="computedNoteData.title" />
+            <div contenteditable v-on:input="updateNoteTitle">{{ computedNoteData.title }}</div>
           </div>
           <img
             src="../assets/icons/more-icon.svg"
@@ -44,7 +43,7 @@
           <Editor
             v-bind:initialContent="computedNoteData.content"
             v-bind:key="selectedNote.note.noteId"
-            v-bind:fieldUpdate="fieldUpdate"
+            v-bind:updateNoteContent="updateNoteContent"
           />
         </div>
       </div>
@@ -152,7 +151,12 @@ export default {
         this.state = "error";
       }
     },
-    fieldUpdate(e) {
+    updateNoteTitle: function(e) {
+      this.noteData.title = e.target.innerText;
+      this.state = "modified";
+      this.debouncedUpdate();
+    },
+    updateNoteContent(e) {
       this.noteData.content = e;
       this.state = "modified";
       this.debouncedUpdate();
@@ -175,8 +179,8 @@ export default {
       return this.$store.getters.selectedNote;
     },
     isBookmarked: function() {
-      const bookmarksName = this.bookmarks.map(bookmark => bookmark.name);
-      return bookmarksName.includes(this.selectedNote.note.title);
+      const bookmarksName = this.bookmarks.map(bookmark => bookmark.bookmarkId);
+      return bookmarksName.includes(this.selectedNote.note.noteId);
     },
     computedNoteData: {
       get: function() {
@@ -236,10 +240,18 @@ export default {
       font-weight: 400;
     }
 
-    input {
-      color: #b3b1ad;
-      background-color: transparent;
-      font-size: 1.2em;
+    [contenteditable] {
+      -webkit-tap-highlight-color: transparent;
+
+      &:focus {
+        outline: 0;
+      }
+    }
+
+    [contenteditable]:empty:before {
+      content: attr(placeholder);
+      display: block;
+      -webkit-text-fill-color: #e7d6b3 !important;
     }
   }
 

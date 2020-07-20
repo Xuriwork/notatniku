@@ -38,20 +38,6 @@ html, body, #app {
   list-style: none;
 }
 
-[contenteditable] {
-	-webkit-tap-highlight-color: transparent;
-
-	&:focus {
-		outline: 0;
-	}
-}
-
-[contenteditable]:empty:before {
-	content: attr(placeholder);
-	display: block;
-	-webkit-text-fill-color: #e7d6b3 !important;
-}
-
 button,
 input {
 	border: none;
@@ -59,10 +45,9 @@ input {
 
 button {
   cursor: pointer;
-  font-family: Quicksand;
 }
 
-input {
+input, button {
   font-family: Quicksand;
 }
 
