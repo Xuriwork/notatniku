@@ -11,7 +11,7 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
 	state: {
-		loading: true,
+		loading: false,
 		user: {},
 		userProfile: {},
 		errors: {},
@@ -97,6 +97,8 @@ export default new Vuex.Store({
 			await auth.sendPasswordResetEmail(email);
 		},
 		async fetchUser({ commit }, user) {
+			commit('setLoading', true);
+
 			const usersCollectionRef = usersCollection.doc(user.uid);
 			await usersCollectionRef.onSnapshot((snapshot) => {
 				commit('setUserProfile', snapshot.data());

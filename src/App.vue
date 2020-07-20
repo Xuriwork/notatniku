@@ -62,6 +62,10 @@ button {
   font-family: Quicksand;
 }
 
+input {
+  font-family: Quicksand;
+}
+
 h1,
 h2,
 h3,

@@ -1,6 +1,6 @@
 <template>
   <fragment>
-    <div v-if="!loading" class="home-component">
+    <div class="home-component">
       <Sidebar
         v-bind:notes="notes"
         v-bind:bookmarks="bookmarks"
@@ -16,6 +16,7 @@
               <BookmarkIcon v-bind:isBookmarked="isBookmarked" />
             </span>
             <h3>{{ selectedNote.note.title }}</h3>
+            <input type='text' v-bind:value="computedNoteData.title" />
           </div>
           <img
             src="../assets/icons/more-icon.svg"
@@ -180,7 +181,8 @@ export default {
     computedNoteData: {
       get: function() {
         return {
-          content: this.selectedNote.note.content
+          content: this.selectedNote.note.content,
+          title: this.selectedNote.note.title
         };
       },
       set: function(data) {
@@ -232,6 +234,12 @@ export default {
     h3 {
       color: #b3b1ad;
       font-weight: 400;
+    }
+
+    input {
+      color: #b3b1ad;
+      background-color: transparent;
+      font-size: 1.2em;
     }
   }
 
