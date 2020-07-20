@@ -33,7 +33,7 @@
         <div class="editor-container">
           <button v-on:click.prevent="updateFirebase" class="save-button">Save note</button>
           <Editor
-            v-bind:intialContent="selectedNote.note.content"
+            v-bind:initialContent="initialContent"
             v-bind:key="selectedNote.note.noteId"
             v-bind:fieldUpdate="fieldUpdate"
           />
@@ -167,6 +167,9 @@ export default {
     },
     isBookmarked: function() {
       return this.bookmarksName.includes(this.selectedNote.note.title);
+    },
+    initialContent: function() {
+      return this.selectedNote.note.content;
     },
     sessionSaved: function() {
       return { saved: false };
