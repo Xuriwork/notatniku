@@ -110,7 +110,7 @@ export default new Vuex.Store({
 					const filteredNotes = notes.filter((note) => note.isTrash == false);
 					commit('setNotes', filteredNotes);
 					commit('setSelectedNote', {
-						note: notes.length === 0 ? [] : notes[0],
+						note: filteredNotes[0] ?? [],
 						index: 0,
 					});
 
@@ -119,6 +119,7 @@ export default new Vuex.Store({
 				},
 				(error) => console.error(error)
 			);
+
 			commit('setLoading', false);
 
 			if (
@@ -128,7 +129,7 @@ export default new Vuex.Store({
 			) {
 				router.push('/');
 			}
-		}
+		},
 	},
 	getters: {
 		loading: (state) => state.loading,

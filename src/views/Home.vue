@@ -1,6 +1,5 @@
 <template>
   <fragment>
-    <Loading v-if="loading" />
     <div v-if="!loading" class="home-component">
       <Sidebar
         v-bind:notes="notes"
@@ -25,9 +24,18 @@
             v-on:click="handleModal('more-items')"
           />
         </header>
+        <div v-if="state === 'synced'">Form is synced with Firestore</div>
+        <div v-else-if="state === 'modified'">From data changed, will sync with Firebase</div>
+        <div v-else-if="state === 'revoked'">From data and Firebase revoked to original data</div>
+        <div v-else-if="state === 'error'">Failed to save to Firestore. {{ errorMessage }}</div>
+        <div v-else-if="state === 'loading'">Loading...</div>
         <span v-if="sessionSaved.saved">Saved: {{ sessionSaved }}</span>
         <div class="editor-container">
-          <Editor v-bind:content_PROP="selectedNote.note.content" v-bind:key="selectedNote.note.noteId" />
+          <button v-on:click.prevent="updateFirebase" class="save-button">Save note</button>
+          <Editor
+            v-bind:intialContent="selectedNote.note.content"
+            v-bind:key="selectedNote.note.noteId"
+          />
         </div>
       </div>
     </div>
@@ -35,7 +43,6 @@
 </template>
 
 <script>
-import Loading from "../components/Loading";
 import Sidebar from "../components/Sidebar";
 import Editor from "../components/Editor";
 import BookmarkIcon from "../components/BookmarkIcon";
@@ -44,10 +51,45 @@ import firebase, { usersCollection } from "../utils/firebase";
 export default {
   name: "Home",
   components: {
-    Loading,
     Sidebar,
     Editor,
     BookmarkIcon
+  },
+  data() {
+    return {
+      state: "loading",
+      firebaseData: null,
+      noteData: {},
+      error: ""
+    };
+  },
+  created: async function() {
+    if (this.selectedNote.note.noteId) {
+      const noteRef = usersCollection
+        .doc(this.userId)
+        .collection("notes")
+        .doc(this.selectedNote.note.noteId);
+
+      let data = (await noteRef.get()).data();
+
+      if (!data) {
+        data = { content: "", title: "" };
+        noteRef.update(data);
+      }
+
+      this.noteData = data;
+      this.state = "synced";
+    }
+  },
+  firestore() {
+    if (this.selectedNote.note.noteId) {
+      return {
+        firebaseData: usersCollection
+          .doc(this.userId)
+          .collection("notes")
+          .doc(this.selectedNote.note.noteId)
+      };
+    }
   },
   methods: {
     handleModal: function(type) {
@@ -75,6 +117,23 @@ export default {
           name
         })
       });
+    },
+    async updateFirebase() {
+      console.log("dadadas");
+
+      try {
+        await usersCollection
+          .doc(this.userId)
+          .collection("notes")
+          .doc(this.selectedNote.note.noteId)
+          .update(this.noteData);
+
+        this.state = "synced";
+      } catch (error) {
+        console.log(error);
+        this.error = JSON.stringify(error);
+        this.state = "error";
+      }
     }
   },
   computed: {
@@ -153,6 +212,14 @@ export default {
 
   .editor-container {
     margin-top: 15px;
+  }
+
+  .save-button {
+    background-color: #f89b5e;
+    color: #fff;
+    padding: 5px 25px;
+    border-radius: 5px;
+    margin-bottom: 10px;
   }
 }
 </style>

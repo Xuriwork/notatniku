@@ -1,8 +1,5 @@
 <template>
-  <fragment>
-    <button v-on:click="handleSave" class="save-button">Save note</button>
-    <vue-editor v-model="content" v-bind:editor-toolbar="customToolbar" class="editor" />
-  </fragment>
+  <vue-editor v-model="content" v-bind:editor-toolbar="customToolbar" class="editor" />
 </template>
 
 <script>
@@ -11,11 +8,11 @@ import { VueEditor } from "vue2-editor";
 export default {
   components: { VueEditor },
   props: {
-    content_PROP: String
+    intialContent: String
   },
   data() {
     return {
-      content: this.content_PROP,
+      content: this.intialContent,
       customToolbar: [
         [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
         [{ 'font': [] }],
@@ -29,11 +26,6 @@ export default {
         ["clean"]
       ]
     };
-  },
-  methods: {
-    handleSave: function() {
-      console.log(this.content);
-    }
   }
 };
 </script>
@@ -42,13 +34,5 @@ export default {
 .editor {
   text-decoration: initial !important;
 	text-decoration: underline;
-}
-
-.save-button {
-  background-color: #f89b5e;
-  color: #fff;
-  padding: 5px 25px;
-  border-radius: 5px;
-  margin-bottom: 10px;
 }
 </style>

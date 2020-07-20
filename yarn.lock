@@ -1114,6 +1114,11 @@
   resolved "https://registry.yarnpkg.com/@nodelib/fs.stat/-/fs.stat-1.1.3.tgz#2b5a3ab3f918cca48a8c754c08168e3f03eba61b"
   integrity sha512-shAmDyaQC4H92APFoIaVDHCx5bStIocgvbwQyxPRrbUY20V1EYTbSDchWbuwlMG3V17cprZhA6+78JfB+3DTPw==
 
+"@posva/vuefire-core@^2.3.2":
+  version "2.3.2"
+  resolved "https://registry.yarnpkg.com/@posva/vuefire-core/-/vuefire-core-2.3.2.tgz#54f7c2f2e257a1cc782e88e00ac4b19d82af0cac"
+  integrity sha512-eUezJNxzSjlFgCQxsIqWR5vOUHbSdlxWr4LqkyUysT8FPyaDUoJTxDQJuCI3oJSYYNeDGPLY5TYCTK97Z4ayfw==
+
 "@protobufjs/aspromise@^1.1.1", "@protobufjs/aspromise@^1.1.2":
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/@protobufjs/aspromise/-/aspromise-1.1.2.tgz#9b8b0cc663d669a7d8f6f5d0893a14d348f30fbf"
@@ -3190,6 +3195,11 @@ de-indent@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/de-indent/-/de-indent-1.0.2.tgz#b2038e846dc33baa5796128d0804b455b8c1e21d"
   integrity sha1-sgOOhG3DO6pXlhKNCAS0VbjB4h0=
+
+debounce@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/debounce/-/debounce-1.2.0.tgz#44a540abc0ea9943018dc0eaa95cce87f65cd131"
+  integrity sha512-mYtLl1xfZLi1m4RtQYlZgJUNQjl4ZxVnHzIR8nLLgi4q1YT8o/WM+MK/f8yfcc9s5Ir5zRaPZyZU6xs1Syoocg==
 
 debug@2.6.9, debug@^2.2.0, debug@^2.3.3:
   version "2.6.9"
@@ -8975,6 +8985,13 @@ vue@^2.6.11:
   version "2.6.11"
   resolved "https://registry.yarnpkg.com/vue/-/vue-2.6.11.tgz#76594d877d4b12234406e84e35275c6d514125c5"
   integrity sha512-VfPwgcGABbGAue9+sfrD4PuwFar7gPb1yl1UK1MwXoQPAw0BKSqWfoYCT/ThFrdEVWoI51dBuyCoiNU9bZDZxQ==
+
+vuefire@^2.2.3:
+  version "2.2.3"
+  resolved "https://registry.yarnpkg.com/vuefire/-/vuefire-2.2.3.tgz#e671365d1a186bb486c63e282a76cc73241f9e84"
+  integrity sha512-6KQwFv3e4BDd+DX92+1OuEtSy4FHHFh6OK7oAl06wkfdORhBWKRnPhEOXkerAqQ1ZrfFNsfK1ZvdOrk6Hgib5w==
+  dependencies:
+    "@posva/vuefire-core" "^2.3.2"
 
 vuex@^3.4.0:
   version "3.5.1"

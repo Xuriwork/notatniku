@@ -5,13 +5,12 @@ import router from './router';
 import store from './store';
 import { auth } from './utils/firebase';
 
+import { firestorePlugin } from 'vuefire';
 import Fragment from 'vue-fragment';
-import axios from 'axios';
 
 import 'notyf/notyf.min.css';
 
-axios.defaults.baseURL = 'https://us-central1-notatniku.cloudfunctions.net/api';
-
+Vue.use(firestorePlugin, { wait: true });
 Vue.use(Fragment.Plugin);
 
 Vue.config.productionTip = false;

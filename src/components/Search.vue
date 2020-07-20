@@ -11,7 +11,7 @@
           v-for="result of queryResults"
           v-bind:key="result.noteId"
           v-bind:id="result.noteId"
-          v-on:click="handleChangeView"
+          v-on:click="handleSelectResult"
         >{{ result.title }}</li>
       </ul>
     </div>
@@ -29,6 +29,12 @@ export default {
     return {
       searchText: ""
     };
+  },
+  methods: {
+    handleSelectResult: function(e) {
+      this.handleChangeView(e);
+      this.searchText = '';
+    }
   },
   computed: {
     options() {

@@ -1,5 +1,6 @@
 <template>
   <fragment>
+    <Loading v-if="loading" />
     <Modal v-if="modalType" v-bind:modalType="modalType" />
     <router-view/>
   </fragment>
@@ -7,12 +8,17 @@
 
 <script>
 import Modal from './components/Modal';
+import Loading from './components/Loading';
 
 export default {
   components: {
-    Modal
+    Modal,
+    Loading
   },
   computed: {
+    loading: function() {
+      return this.$store.getters.loading;
+    },
     modalType: function() {
       return this.$store.getters.modalType;
     }
