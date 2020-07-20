@@ -25,8 +25,8 @@
           />
         </header>
         <div v-if="state === 'synced'">Form is synced with Firestore</div>
-        <div v-else-if="state === 'modified'">From data changed, will sync with Firebase</div>
-        <div v-else-if="state === 'revoked'">From data and Firebase revoked to original data</div>
+        <div v-else-if="state === 'modified'">Form data changed, will sync with Firebase</div>
+        <div v-else-if="state === 'revoked'">Form data and Firebase revoked to original data</div>
         <div v-else-if="state === 'error'">Failed to save to Firestore. {{ errorMessage }}</div>
         <div v-else-if="state === 'loading'">Loading...</div>
         <span v-if="sessionSaved.saved">Saved: {{ sessionSaved }}</span>
@@ -35,6 +35,7 @@
           <Editor
             v-bind:intialContent="selectedNote.note.content"
             v-bind:key="selectedNote.note.noteId"
+            v-bind:fieldUpdate="fieldUpdate"
           />
         </div>
       </div>
@@ -47,6 +48,7 @@ import Sidebar from "../components/Sidebar";
 import Editor from "../components/Editor";
 import BookmarkIcon from "../components/BookmarkIcon";
 import firebase, { usersCollection } from "../utils/firebase";
+import debounce from 'debounce';
 
 export default {
   name: "Home",
@@ -119,9 +121,9 @@ export default {
       });
     },
     async updateFirebase() {
-      console.log("dadadas");
-
       try {
+        console.log("dadadas");
+        console.log(this.noteData);
         await usersCollection
           .doc(this.userId)
           .collection("notes")
@@ -134,7 +136,15 @@ export default {
         this.error = JSON.stringify(error);
         this.state = "error";
       }
-    }
+    },
+    fieldUpdate() {
+      console.log('UPDATED')
+      this.state = "modified";
+      this.debouncedUpdate();
+    },
+    debouncedUpdate: debounce(function() {
+      this.updateFirebase();
+    }, 1500)
   },
   computed: {
     loading: function() {

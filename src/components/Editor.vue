@@ -1,5 +1,5 @@
 <template>
-  <vue-editor v-model="content" v-bind:editor-toolbar="customToolbar" class="editor" />
+  <vue-editor v-model="content" v-bind:editor-toolbar="customToolbar" class="editor" @input="fieldUpdate" />
 </template>
 
 <script>
@@ -8,7 +8,8 @@ import { VueEditor } from "vue2-editor";
 export default {
   components: { VueEditor },
   props: {
-    intialContent: String
+    intialContent: String,
+    fieldUpdate: Function
   },
   data() {
     return {
