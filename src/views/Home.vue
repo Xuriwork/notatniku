@@ -24,7 +24,7 @@
             v-on:click="handleModal('more-items')"
           />
         </header>
-        <div>
+        <div class="data-state-container">
           <span v-if="state === 'synced' && sessionSavedAt">Synced at {{ sessionSavedAt }}</span>
           <span v-else-if="state === 'modified'">Data changed, and will sync</span>
           <span v-else-if="state === 'revoked'">Data revoked to original data</span>
@@ -32,7 +32,6 @@
           <span v-else-if="state === 'loading'">Loading...</span>
         </div>
         <div class="editor-container">
-          <button v-on:click.prevent="updateFirebase" class="save-button">Save note</button>
           <Editor
             v-bind:initialContent="initialContent"
             v-bind:key="selectedNote.note.noteId"
@@ -49,9 +48,9 @@ import Sidebar from "../components/Sidebar";
 import Editor from "../components/Editor";
 import BookmarkIcon from "../components/BookmarkIcon";
 import firebase, { usersCollection } from "../utils/firebase";
-import debounce from 'debounce';
-import dayjs from 'dayjs';
-import relativeTime from 'dayjs/plugin/relativeTime';
+import debounce from "debounce";
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
 dayjs.extend(relativeTime);
 
 export default {
@@ -67,7 +66,7 @@ export default {
       sessionSavedAt: null,
       firebaseData: null,
       noteData: {},
-      error: "",
+      error: ""
     };
   },
   created: async function() {
@@ -87,7 +86,7 @@ export default {
       this.noteData = data;
       this.state = "synced";
       const date = new Date();
-      this.sessionSavedAt = dayjs(date).format('HH:mm:ss');
+      this.sessionSavedAt = dayjs(date).format("HH:mm:ss");
     }
   },
   firestore() {
@@ -137,8 +136,7 @@ export default {
 
         this.state = "synced";
         const date = new Date();
-        this.sessionSavedAt = dayjs(date).format('HH:mm:ss');
-
+        this.sessionSavedAt = dayjs(date).format("HH:mm:ss");
       } catch (error) {
         console.log(error);
         this.error = JSON.stringify(error);
@@ -227,16 +225,12 @@ export default {
     }
   }
 
-  .editor-container {
-    margin-top: 15px;
+  .data-state-container {
+    margin-top: 10px;
   }
 
-  .save-button {
-    background-color: #f89b5e;
-    color: #fff;
-    padding: 5px 25px;
-    border-radius: 5px;
-    margin-bottom: 10px;
+  .editor-container {
+    margin-top: 15px;
   }
 }
 </style>
