@@ -8,12 +8,12 @@ import { VueEditor } from "vue2-editor";
 export default {
   components: { VueEditor },
   props: {
-    intialContent: String,
+    initialContent: String,
     fieldUpdate: Function
   },
   data() {
     return {
-      content: this.intialContent,
+      content: this.initialContent,
       customToolbar: [
         [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
         [{ 'font': [] }],

@@ -24,12 +24,13 @@
             v-on:click="handleModal('more-items')"
           />
         </header>
-        <div v-if="state === 'synced'">Form is synced with Firestore</div>
-        <div v-else-if="state === 'modified'">Form data changed, will sync with Firebase</div>
-        <div v-else-if="state === 'revoked'">Form data and Firebase revoked to original data</div>
-        <div v-else-if="state === 'error'">Failed to save to Firestore. {{ errorMessage }}</div>
-        <div v-else-if="state === 'loading'">Loading...</div>
-        <span v-if="sessionSaved.saved">Saved: {{ sessionSaved }}</span>
+        <div>
+          <span v-if="state === 'synced' && sessionSavedAt">Synced at {{ sessionSavedAt }}</span>
+          <span v-else-if="state === 'modified'">Data changed, and will sync</span>
+          <span v-else-if="state === 'revoked'">Data revoked to original data</span>
+          <span v-else-if="state === 'error'">Failed to save data. {{ errorMessage }}</span>
+          <span v-else-if="state === 'loading'">Loading...</span>
+        </div>
         <div class="editor-container">
           <button v-on:click.prevent="updateFirebase" class="save-button">Save note</button>
           <Editor
@@ -49,6 +50,9 @@ import Editor from "../components/Editor";
 import BookmarkIcon from "../components/BookmarkIcon";
 import firebase, { usersCollection } from "../utils/firebase";
 import debounce from 'debounce';
+import dayjs from 'dayjs';
+import relativeTime from 'dayjs/plugin/relativeTime';
+dayjs.extend(relativeTime);
 
 export default {
   name: "Home",
@@ -60,9 +64,10 @@ export default {
   data() {
     return {
       state: "loading",
+      sessionSavedAt: null,
       firebaseData: null,
       noteData: {},
-      error: ""
+      error: "",
     };
   },
   created: async function() {
@@ -81,6 +86,8 @@ export default {
 
       this.noteData = data;
       this.state = "synced";
+      const date = new Date();
+      this.sessionSavedAt = dayjs(date).format('HH:mm:ss');
     }
   },
   firestore() {
@@ -122,8 +129,6 @@ export default {
     },
     async updateFirebase() {
       try {
-        console.log("dadadas");
-        console.log(this.noteData);
         await usersCollection
           .doc(this.userId)
           .collection("notes")
@@ -131,14 +136,17 @@ export default {
           .update(this.noteData);
 
         this.state = "synced";
+        const date = new Date();
+        this.sessionSavedAt = dayjs(date).format('HH:mm:ss');
+
       } catch (error) {
         console.log(error);
         this.error = JSON.stringify(error);
         this.state = "error";
       }
     },
-    fieldUpdate() {
-      console.log('UPDATED')
+    fieldUpdate(e) {
+      this.noteData.content = e;
       this.state = "modified";
       this.debouncedUpdate();
     },
@@ -170,10 +178,6 @@ export default {
     },
     initialContent: function() {
       return this.selectedNote.note.content;
-    },
-    sessionSaved: function() {
-      return { saved: false };
-      //return dayjs(this.sessionSaved.timestamp).fromNow();
     }
   }
 };
