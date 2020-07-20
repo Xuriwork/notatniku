@@ -15,13 +15,10 @@
       <hr />
       <button>Sign out ({{ email }})</button>
     </div>
-    <div class="search-input-container">
-      <img src="../assets/icons/search.svg" alt="Search icon" />
-      <input type="text" v-model="searchInput" placeholder="Search" />
-    </div>
-    <BookmarksList v-bind:bookmarks="bookmarks" v-bind:handleViewChange="handleViewChange" />
+    <Search v-bind:handleChangeView="handleChangeView" />
+    <BookmarksList v-bind:bookmarks="bookmarks" v-bind:handleChangeView="handleChangeView" />
     <NotesList
-      v-bind:handleViewChange="handleViewChange"
+      v-bind:handleChangeView="handleChangeView"
       v-bind:notes="notes"
       v-bind:selectedNoteIndex="selectedNote.index"
     />
@@ -37,25 +34,26 @@
 </template>
 
 <script>
-import BookmarksList from "../components/BookmarksList";
-import NotesList from "../components/NotesList";
+import BookmarksList from "./BookmarksList";
+import NotesList from "./NotesList";
+import Search from './Search';
 
 export default {
   name: "Sidebar",
   components: {
+    Search,
     BookmarksList,
-    NotesList
+    NotesList,
   },
   props: {
     notes: Array,
     bookmarks: Array,
-    handleViewChange: Function,
+    handleChangeView: Function,
     handleModal: Function,
     selectedNote: Object
   },
   data() {
     return {
-      searchInput: "",
       dropdownOpen: false,
       name: this.$store.getters.user.displayName,
       email: this.$store.getters.user.email
@@ -161,35 +159,6 @@ export default {
       margin-left: 10px;
 
       font-size: 0.9em;
-    }
-  }
-
-  .search-input-container {
-    display: flex;
-    position: relative;
-    margin-bottom: 25px;
-
-    img {
-      width: 15px;
-      position: absolute;
-      left: 4px;
-      top: 4px;
-    }
-
-    input {
-      border-bottom: 1px solid #c8c5c1;
-      width: 100%;
-      padding: 5px 10px;
-      text-indent: 20px;
-      background-color: transparent;
-
-      &:focus {
-        outline: none;
-      }
-
-      &::placeholder {
-        color: #c8c5c1;
-      }
     }
   }
 

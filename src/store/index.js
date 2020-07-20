@@ -2,7 +2,9 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 import router from '../router';
 import { auth, usersCollection } from '../utils/firebase';
+
 import { Notyf } from 'notyf';
+
 const notyf = new Notyf();
 
 Vue.use(Vuex);
@@ -101,25 +103,22 @@ export default new Vuex.Store({
 			});
 			commit('setUser', user);
 
-			await usersCollectionRef
-				.collection('notes')
-				.onSnapshot(
-					(snapshot) => {
-						const notes = [];
-						snapshot.forEach((doc) => notes.push(doc.data()));
-						const filteredNotes = notes.filter(note => note.isTrash == false);
-						commit('setNotes', filteredNotes);
-						commit('setSelectedNote', {
-							note: notes.length === 0 ? [] : notes[0],
-							index: 0,
-						});
+			await usersCollectionRef.collection('notes').onSnapshot(
+				(snapshot) => {
+					const notes = [];
+					snapshot.forEach((doc) => notes.push(doc.data()));
+					const filteredNotes = notes.filter((note) => note.isTrash == false);
+					commit('setNotes', filteredNotes);
+					commit('setSelectedNote', {
+						note: notes.length === 0 ? [] : notes[0],
+						index: 0,
+					});
 
-						const trash = notes.filter(note => note.isTrash == true);
-						commit('setTrash', trash);
-					},
-					(error) => console.error(error)
-				);
-
+					const trash = notes.filter((note) => note.isTrash == true);
+					commit('setTrash', trash);
+				},
+				(error) => console.error(error)
+			);
 			commit('setLoading', false);
 
 			if (
@@ -129,7 +128,7 @@ export default new Vuex.Store({
 			) {
 				router.push('/');
 			}
-		},
+		}
 	},
 	getters: {
 		loading: (state) => state.loading,

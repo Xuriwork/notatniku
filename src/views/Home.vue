@@ -6,10 +6,10 @@
         v-bind:notes="notes"
         v-bind:bookmarks="bookmarks"
         v-bind:selectedNote="selectedNote"
-        v-bind:handleViewChange="handleViewChange"
+        v-bind:handleChangeView="handleChangeView"
         v-bind:handleModal="handleModal"
       />
-      <div class="no-notes-screen" v-if="notes.length === 0">You have 0 notes</div>
+      <div class="no-notes-screen" v-if="!notes.length">You have 0 notes</div>
       <div class="home-view-container" v-else>
         <header>
           <div>
@@ -53,7 +53,7 @@ export default {
     handleModal: function(type) {
       this.$store.commit("setModalType", type);
     },
-    handleViewChange: function(e) {
+    handleChangeView: function(e) {
       const noteId = e.target.id;
       const index = this.notes.findIndex(note => note.noteId === noteId);
       const selectedNote = { note: this.notes[index], index };

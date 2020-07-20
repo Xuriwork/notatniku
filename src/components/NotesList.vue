@@ -1,13 +1,13 @@
 <template>
   <div class="notes-list-container">
     <h4>Notes</h4>
-    <span v-if="notes.length === 0">You haven't written any notes</span>
+    <span v-if="!notes.length">You haven't written any notes</span>
     <ul v-else>
       <li 
         v-for="(note, index) in notes" 
         v-bind:key="note.noteId"
         v-bind:id="note.noteId"
-        v-on:click="handleViewChange"
+        v-on:click="handleChangeView"
         v-bind:style="{color: index === selectedNoteIndex ? '#f89b5e' : ''}"
       >{{ note.title }}</li>
     </ul>
@@ -19,7 +19,7 @@ export default {
   name: "NotesList",
   props: {
     notes: Array,
-    handleViewChange: Function,
+    handleChangeView: Function,
     selectedNoteIndex: Number
   }
 };

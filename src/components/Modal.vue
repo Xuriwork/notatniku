@@ -7,7 +7,7 @@
           <input type="text" v-model="noteName" placeholder="Note name" />
         </form>
         <div v-if="modalType === 'trash'" class="trash-list" style="marginTop: 10px">
-          <span v-if="trash.length === 0">Your trash is empty</span>
+          <span v-if="!trash.length">Your trash is empty</span>
           <ul v-else>
             <li v-for="note in trash" v-bind:key="note.noteId">
               <span>{{ note.title }}</span>
@@ -273,7 +273,7 @@ export default {
       max-width: 200px;
 
       &:hover {
-        color: #f04c4c;
+        color: #f89b5e;
       }
     }
 
