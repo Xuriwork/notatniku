@@ -42,7 +42,7 @@ export default {
 
       return this.options
         .map(option => {
-          const scorableFields = [option.noteId, option.title].map(toScore =>
+          const scorableFields = [option.title].map(toScore =>
             fz.score(toScore, this.searchText, { preparedQuery })
           );
 
@@ -50,7 +50,8 @@ export default {
 
           return option;
         })
-        .filter(option => scores[option.noteId] > 1);
+        .filter(option => scores[option.noteId] > 1)
+        .sort((a, b) => scores[b.noteId] - scores[a.noteId]);
     }
   }
 };
@@ -97,7 +98,27 @@ export default {
   background-color: #ffffff;
   padding: 10px 20px;
   box-sizing: border-box;
-  box-shadow: 0 5px 10px rgba(0,0,0,0.05);
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.03);
+
+  ul {
+    overflow-y: auto;
+    max-height: 400px;
+
+    &::-webkit-scrollbar {
+      width: 6px;
+      background-color: #f5f5f5;
+      border-radius: 50px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background-color: #f5f5f5;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background-color: #f89b5e;
+      border-radius: 50px;
+    }
+  }
 
   li:hover {
     color: #f89b5e;
