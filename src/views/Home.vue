@@ -130,7 +130,7 @@ export default {
         .doc(noteId)
         .update(noteData)
         .then(() => this.setStateToSaved())
-        .catch(error => console.log(error));
+        .catch(error => console.error(error));
     }
   },
   computed: {

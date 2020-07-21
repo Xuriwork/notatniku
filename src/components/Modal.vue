@@ -113,8 +113,6 @@ export default {
         .doc(noteId)
         .update({ isTrash: false })
         .catch(error => console.error(error));
-
-      console.log("Weird");
     },
     handleDeleteNote: async function(e) {
       const userId = this.$store.getters.userId;
