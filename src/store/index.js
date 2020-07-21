@@ -11,16 +11,14 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
 	state: {
-		loading: false,
+		loading: true,
 		user: {},
 		userProfile: {},
 		errors: {},
 		notes: [],
 		trash: [],
-		selectedNote: {
-			note: [],
-			index: 0,
-		},
+		selectedNote: {},
+		selectedNoteIndex: 0,
 		modalType: null,
 	},
 	mutations: {
@@ -41,6 +39,10 @@ export default new Vuex.Store({
 		},
 		setSelectedNote(state, payload) {
 			state.selectedNote = payload;
+		},
+		setSelectedNoteIndex(state, payload) {
+			state.selectedNoteIndex = payload;
+			state.selectedNote = state.notes[payload];
 		},
 		setErrors(state, payload) {
 			state.errors = payload;
@@ -105,24 +107,21 @@ export default new Vuex.Store({
 			});
 			commit('setUser', user);
 
-			await usersCollectionRef.collection('notes').onSnapshot(
-				(snapshot) => {
-					const notes = [];
-					snapshot.forEach((doc) => notes.push(doc.data()));
-					const filteredNotes = notes.filter((note) => note.isTrash == false);
-					commit('setNotes', filteredNotes);
-					commit('setSelectedNote', {
-						note: filteredNotes[0] ?? [],
-						index: 0,
-					});
+			await usersCollectionRef
+				.collection('notes')
+				.orderBy('dateModified', 'desc')
+				.onSnapshot(
+					(snapshot) => {
+						const notes = [];
+						snapshot.forEach((doc) => notes.push(doc.data()));
+						const filteredNotes = notes.filter((note) => note.isTrash == false);
+						commit('setNotes', filteredNotes);
 
-					const trash = notes.filter((note) => note.isTrash == true);
-					commit('setTrash', trash);
-				},
-				(error) => console.error(error)
-			);
-
-			commit('setLoading', false);
+						const trash = notes.filter((note) => note.isTrash == true);
+						commit('setTrash', trash);
+					},
+					(error) => console.error(error)
+				);
 
 			if (
 				router.currentRoute.path === '/sign-in' ||
@@ -139,7 +138,8 @@ export default new Vuex.Store({
 		userId: (state) => state.user.uid,
 		notes: (state) => state.notes,
 		trash: (state) => state.trash,
-		selectedNote: (state) => state.selectedNote,
+		selectedNote: (state) => state.notes[state.selectedNoteIndex] || {},
+		selectedNoteIndex: (state) => state.selectedNoteIndex,
 		bookmarks: (state) => state.userProfile.bookmarks || [],
 		modalType: (state) => state.modalType,
 	},

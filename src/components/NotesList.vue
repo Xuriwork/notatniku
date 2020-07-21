@@ -4,11 +4,11 @@
     <span v-if="!notes.length">You haven't written any notes</span>
     <ul v-else>
       <li 
-        v-for="(note, index) in notes" 
+        v-for="note in notes" 
         v-bind:key="note.noteId"
         v-bind:id="note.noteId"
         v-on:click="handleChangeView"
-        v-bind:style="{color: index === selectedNoteIndex ? '#f89b5e' : ''}"
+        v-bind:style="{color: note.noteId === selectedNoteId ? '#f89b5e' : ''}"
       >{{ note.title }}</li>
     </ul>
   </div>
@@ -20,7 +20,7 @@ export default {
   props: {
     notes: Array,
     handleChangeView: Function,
-    selectedNoteIndex: Number
+    selectedNoteId: String
   }
 };
 </script>

@@ -1,14 +1,14 @@
 <template>
   <fragment>
     <Loading v-if="loading" />
+    <router-view v-else />
     <Modal v-if="modalType" v-bind:modalType="modalType" />
-    <router-view/>
   </fragment>
 </template>
 
 <script>
-import Modal from './components/Modal';
-import Loading from './components/Loading';
+import Modal from "./components/Modal";
+import Loading from "./components/Loading";
 
 export default {
   components: {
@@ -23,31 +23,34 @@ export default {
       return this.$store.getters.modalType;
     }
   }
-}
+};
 </script>
 
 <style lang="scss">
-html, body, #app {
+html,
+body,
+#app {
   height: 100%;
   font-family: Quicksand;
 }
 
 * {
-	margin: 0;
+  margin: 0;
   padding: 0;
   list-style: none;
 }
 
 button,
 input {
-	border: none;
+  border: none;
 }
 
 button {
   cursor: pointer;
 }
 
-input, button {
+input,
+button {
   font-family: Quicksand;
 }
 
@@ -57,14 +60,16 @@ h3,
 h4,
 p,
 a {
-	color: #5c5a56;
+  color: #5c5a56;
 }
 
 a {
   text-decoration: none;
 }
 
-.sign-in-component, .sign-up-component, .forgot-password-component {
+.sign-in-component,
+.sign-up-component,
+.forgot-password-component {
   display: flex;
   background-color: #ece3db;
   height: 100%;
@@ -154,9 +159,8 @@ a {
 }
 
 @media (max-width: 1100px) {
-	.background-image-container {
-		display: none;
-	}
+  .background-image-container {
+    display: none;
+  }
 }
-
 </style>

@@ -6,12 +6,12 @@
         <form v-if="modalType === 'add'">
           <input type="text" v-model="noteName" placeholder="Note name" />
         </form>
-        <div v-if="modalType === 'trash'" class="trash-list" style="marginTop: 10px">
+        <div v-if="modalType === 'trash'" class="trash-list-container" style="marginTop: 10px">
           <span v-if="!trash.length">Your trash is empty</span>
           <ul v-else>
             <li v-for="note in trash" v-bind:key="note.noteId">
               <span>{{ note.title }}</span>
-              <button v-bind:id="note.noteId" v-on:click="handleRemoveFromTrash">Cancel delete</button>
+              <button v-bind:id="note.noteId" v-on:click="handleRemoveFromTrash">Remove</button>
               <button v-bind:id="note.noteId" v-on:click="handleDeleteNote">Delete</button>
             </li>
           </ul>
@@ -20,8 +20,9 @@
           <li>Save as a PDF</li>
           <li
             class="add-to-trash-button"
-            v-bind:id="selectedNote.note.noteId"
+            v-bind:id="selectedNote.noteId"
             v-on:click="handleAddToTrash"
+            v-bind:disabled="loading"
           >Add to trash</li>
         </ul>
       </div>
@@ -31,6 +32,7 @@
           <button
             v-if="modalInfo.button"
             v-on="{click: modalInfo.button === 'Create Note' ? handleCreateNote : null}"
+            v-bind:disabled="loading"
           >{{ modalInfo.button }}</button>
         </div>
       </div>
@@ -40,7 +42,6 @@
 
 <script>
 import { usersCollection } from "../utils/firebase";
-import slugify from "slugify";
 import uniqid from "uniqid";
 
 export default {
@@ -50,7 +51,8 @@ export default {
   },
   data() {
     return {
-      noteName: ""
+      noteName: "",
+      loading: false
     };
   },
   methods: {
@@ -62,11 +64,13 @@ export default {
       }
     },
     handleCreateNote: function() {
+      this.loading = true;
+      this.$store.commit("setModalType", null);
+
       const noteName = this.noteName;
       const userId = this.$store.getters.userId;
-      const slugifiedNoteName = slugify(noteName, { lower: true });
-      const dateCreated = new Date();
-      const noteId = `${slugifiedNoteName}-${uniqid()}`;
+      const noteId = uniqid();
+      const date = new Date();
 
       usersCollection
         .doc(userId)
@@ -75,14 +79,19 @@ export default {
         .set({
           title: noteName,
           noteId,
-          dateCreated,
+          dateCreated: date,
+          dateModified: date,
           content: "",
           isTrash: false
         })
-        .then(() => this.$store.commit("setModalType", null))
+        .then(() => {
+          this.$store.commit("setSelectedNoteIndex", 0);
+        })
         .catch(error => console.error(error));
     },
     handleAddToTrash: async function(e) {
+      this.loading = true;
+
       const userId = this.$store.getters.userId;
       const noteId = e.target.id;
 
@@ -117,7 +126,6 @@ export default {
           .collection("notes")
           .doc(noteId)
           .delete()
-          .then(() => this.$store.commit("setModalType", null))
           .catch(error => console.error(error));
       }
     }
@@ -141,6 +149,9 @@ export default {
         };
       }
       return modalInfo;
+    },
+    notes: function() {
+      return this.$store.getters.notes;
     },
     selectedNote: function() {
       return this.$store.getters.selectedNote;
@@ -257,14 +268,35 @@ export default {
   width: 100%;
 }
 
-.trash-list {
+.trash-list-container {
+  ul {
+    overflow-y: auto;
+    max-height: 400px;
+    padding-right: 10px;
+
+    &::-webkit-scrollbar {
+      width: 6px;
+      background-color: #f5f5f5;
+      border-radius: 50px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background-color: #f5f5f5;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background-color: #f89b5e;
+      border-radius: 50px;
+    }
+  }
+
   li {
     overflow-y: hidden;
     display: flex;
-    align-items: center;
+    align-items: flex-start;
 
     &:not(:last-of-type) {
-      margin-bottom: 4px;
+      margin-bottom: 10px;
     }
 
     span {

@@ -20,7 +20,7 @@
     <NotesList
       v-bind:handleChangeView="handleChangeView"
       v-bind:notes="notes"
-      v-bind:selectedNoteIndex="selectedNote.index"
+      v-bind:selectedNoteId="selectedNote.noteId"
     />
     <div class="add-note-container" v-on:click="handleModal('add')">
       <img src="../assets/icons/add-icon.svg" alt="Add icon" />
@@ -36,14 +36,14 @@
 <script>
 import BookmarksList from "./BookmarksList";
 import NotesList from "./NotesList";
-import Search from './Search';
+import Search from "./Search";
 
 export default {
   name: "Sidebar",
   components: {
     Search,
     BookmarksList,
-    NotesList,
+    NotesList
   },
   props: {
     notes: Array,
@@ -180,9 +180,29 @@ export default {
   }
 
   .bookmarks-list-container,
-  .notes-list-container,
-  .trash-list-container {
+  .notes-list-container {
     margin-bottom: 25px;
+
+    ul {
+      overflow-y: auto;
+      max-height: 400px;
+      padding-right: 2px;
+
+      &::-webkit-scrollbar {
+        width: 6px;
+        background-color: #f5f5f5;
+        border-radius: 50px;
+      }
+
+      &::-webkit-scrollbar-track {
+        background-color: #f5f5f5;
+      }
+
+      &::-webkit-scrollbar-thumb {
+        background-color: #f89b5e;
+        border-radius: 50px;
+      }
+    }
 
     li {
       cursor: pointer;

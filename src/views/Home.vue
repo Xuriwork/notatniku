@@ -1,54 +1,55 @@
 <template>
-  <fragment>
-    <div class="home-component">
-      <Sidebar
-        v-bind:notes="notes"
-        v-bind:bookmarks="bookmarks"
-        v-bind:selectedNote="selectedNote"
-        v-bind:handleChangeView="handleChangeView"
-        v-bind:handleModal="handleModal"
-      />
-      <div class="no-notes-screen" v-if="!notes.length">You have 0 notes</div>
-      <div class="home-view-container" v-else>
-        <header>
-          <div>
-            <span v-on:click="handleBookmark(selectedNote.note, isBookmarked)">
-              <BookmarkIcon v-bind:isBookmarked="isBookmarked" />
-            </span>
-            <div contenteditable v-on:input="updateNoteTitle">{{ computedNoteData.title }}</div>
-          </div>
-          <img
-            src="../assets/icons/more-icon.svg"
-            alt
-            class="more-items-button"
-            v-on:click="handleModal('more-items')"
-          />
-        </header>
-        <div class="data-state-container">
-          <span v-if="state === 'synced' && sessionSavedAt" class="synced-state">
-            <img src="../assets/icons/cloud-icon.svg" alt="cloud icon" />
-            Synced at {{ sessionSavedAt }}
+  <div class="home-component">
+    <Sidebar
+      v-bind:notes="notes"
+      v-bind:bookmarks="bookmarks"
+      v-bind:selectedNote="selectedNote"
+      v-bind:handleChangeView="handleChangeView"
+      v-bind:handleModal="handleModal"
+    />
+    <div class="no-notes-screen" v-if="!notes.length">You have 0 notes</div>
+    <div class="home-view-container" v-else>
+      <header>
+        <div>
+          <span v-on:click="handleBookmark(selectedNote, isBookmarked)">
+            <BookmarkIcon v-bind:isBookmarked="isBookmarked" />
           </span>
-          <span v-else-if="state === 'modified'">Data changed, and will sync</span>
-          <span v-else-if="state === 'revoked'">Data revoked to original data</span>
-          <span
-            v-else-if="state === 'error'"
-            style="color: #ff5959; font-weight: 600"
-          >Failed to save data. {{ errorMessage }}</span>
-          <span v-else-if="state === 'loading'" class="loading-state">
-            <div class="loading-div"></div>Loading...
-          </span>
+          <div
+            contenteditable
+            v-on:input="updateNoteTitle"
+            placeholder="Untitled"
+          >{{ computedNoteData.title }}</div>
         </div>
-        <div class="editor-container">
-          <Editor
-            v-bind:initialContent="computedNoteData.content"
-            v-bind:key="selectedNote.note.noteId"
-            v-bind:updateNoteContent="updateNoteContent"
-          />
-        </div>
+        <img
+          src="../assets/icons/more-icon.svg"
+          alt
+          class="more-items-button"
+          v-on:click="handleModal('more-items')"
+        />
+      </header>
+      <div class="data-state-container">
+        <button v-on:click="handleUpdateNote" class="save-button">Save</button>
+        <span v-if="state === 'saved' && sessionSavedAt" class="saved-state">
+          <img src="../assets/icons/cloud-icon.svg" alt="cloud icon" />
+          Saved at {{ sessionSavedAt }}
+        </span>
+        <span
+          v-else-if="state === 'error'"
+          style="color: #ff5959; font-weight: 600"
+        >Failed to save data. {{ error }}</span>
+        <span v-else-if="state === 'loading'" class="loading-state">
+          <div class="loading-div"></div>Loading...
+        </span>
+      </div>
+      <div class="editor-container">
+        <Editor
+          v-bind:initialContent="computedNoteData.content"
+          v-bind:key="selectedNote.noteId"
+          v-bind:updateNoteContent="updateNoteContent"
+        />
       </div>
     </div>
-  </fragment>
+  </div>
 </template>
 
 <script>
@@ -56,7 +57,6 @@ import Sidebar from "../components/Sidebar";
 import Editor from "../components/Editor";
 import BookmarkIcon from "../components/BookmarkIcon";
 import firebase, { usersCollection } from "../utils/firebase";
-import debounce from "debounce";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 dayjs.extend(relativeTime);
@@ -70,52 +70,21 @@ export default {
   },
   data() {
     return {
-      state: "loading",
+      state: null,
       sessionSavedAt: null,
-      firebaseData: null,
       noteData: {},
-      error: ""
+      error: null
     };
-  },
-  created: async function() {
-    if (this.selectedNote.note.noteId) {
-      const noteRef = usersCollection
-        .doc(this.userId)
-        .collection("notes")
-        .doc(this.selectedNote.note.noteId);
-
-      let data = (await noteRef.get()).data();
-
-      if (!data) {
-        data = { content: "", title: "" };
-        noteRef.update(data);
-      }
-
-      this.noteData = data;
-      this.state = "synced";
-      const date = new Date();
-      this.sessionSavedAt = dayjs(date).format("HH:mm:ss");
-    }
-  },
-  firestore() {
-    if (this.selectedNote.note.noteId) {
-      return {
-        firebaseData: usersCollection
-          .doc(this.userId)
-          .collection("notes")
-          .doc(this.selectedNote.note.noteId)
-      };
-    }
   },
   methods: {
     handleModal: function(type) {
       this.$store.commit("setModalType", type);
     },
     handleChangeView: function(e) {
+      this.state = null;
       const noteId = e.target.id;
       const index = this.notes.findIndex(note => note.noteId === noteId);
-      const selectedNote = { note: this.notes[index], index };
-      return this.$store.commit("setSelectedNote", selectedNote);
+      return this.$store.commit("setSelectedNoteIndex", index);
     },
     handleBookmark: function(note, isBookmarked) {
       const { noteId: bookmarkId, title: name } = note;
@@ -134,36 +103,35 @@ export default {
         })
       });
     },
-    async updateFirebase() {
-      try {
-        await usersCollection
-          .doc(this.userId)
-          .collection("notes")
-          .doc(this.selectedNote.note.noteId)
-          .update(this.noteData);
-
-        this.state = "synced";
-        const date = new Date();
-        this.sessionSavedAt = dayjs(date).format("HH:mm:ss");
-      } catch (error) {
-        console.log(error);
-        this.error = JSON.stringify(error);
-        this.state = "error";
-      }
-    },
     updateNoteTitle: function(e) {
       this.noteData.title = e.target.innerText;
-      this.state = "modified";
-      this.debouncedUpdate();
     },
     updateNoteContent(e) {
       this.noteData.content = e;
-      this.state = "modified";
-      this.debouncedUpdate();
     },
-    debouncedUpdate: debounce(function() {
-      this.updateFirebase();
-    }, 1500)
+    setStateToSaved() {
+      this.state = "saved";
+      this.sessionSavedAt = dayjs().format("HH:mm:ss");
+    },
+    handleUpdateNote() {
+      this.state = "loading";
+      const { selectedNote, noteData, userId } = this;
+      const { noteId } = selectedNote;
+
+      if (this.noteData.title) {
+        const sanitizedTitle = this.$sanitize(this.noteData.title);
+        this.noteData.title = sanitizedTitle;
+        if (this.noteData.title.trim() === "") this.noteData.title = "Untitled";
+      }
+
+      usersCollection
+        .doc(userId)
+        .collection("notes")
+        .doc(noteId)
+        .update(noteData)
+        .then(() => this.setStateToSaved())
+        .catch(error => console.log(error));
+    }
   },
   computed: {
     userId: function() {
@@ -180,18 +148,13 @@ export default {
     },
     isBookmarked: function() {
       const bookmarksName = this.bookmarks.map(bookmark => bookmark.bookmarkId);
-      return bookmarksName.includes(this.selectedNote.note.noteId);
+      return bookmarksName.includes(this.selectedNote.noteId);
     },
-    computedNoteData: {
-      get: function() {
-        return {
-          content: this.selectedNote.note.content,
-          title: this.selectedNote.note.title
-        };
-      },
-      set: function(data) {
-        return (this.noteData = data);
-      }
+    computedNoteData: function() {
+      return {
+        content: this.selectedNote.content,
+        title: this.selectedNote.title
+      };
     }
   }
 };
@@ -220,6 +183,7 @@ export default {
     padding-bottom: 25px;
     border-bottom: 1px solid #c8c5c1;
     color: #b3b1ad;
+    margin-bottom: 15px;
 
     > div {
       display: flex;
@@ -257,8 +221,13 @@ export default {
 
   .data-state-container {
     margin-top: 10px;
+    display: flex;
 
-    .synced-state {
+    button {
+      margin-right: 10px;
+    }
+
+    .saved-state {
       color: #23d18c;
       font-weight: 500;
       display: flex;
@@ -281,7 +250,7 @@ export default {
         height: 1.4em;
         border: 3px solid #e79166;
         overflow: hidden;
-        animation: spin 3s ease infinite;
+        animation: spin 2.5s ease infinite;
         box-sizing: border-box;
         border-radius: 5px;
       }
@@ -316,6 +285,13 @@ export default {
         }
       }
     }
+  }
+
+  .save-button {
+    background-color: #f3a57e;
+    color: #ffffff;
+    padding: 5px 30px;
+    border-radius: 5px;
   }
 
   .editor-container {

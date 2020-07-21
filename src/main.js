@@ -7,23 +7,32 @@ import { auth } from './utils/firebase';
 
 import { firestorePlugin } from 'vuefire';
 import Fragment from 'vue-fragment';
+import VueSanitize from 'vue-sanitize';
 
 import 'notyf/notyf.min.css';
 
 Vue.use(firestorePlugin, { wait: true });
 Vue.use(Fragment.Plugin);
+Vue.use(VueSanitize);
 
 Vue.config.productionTip = false;
 
 let app;
 auth.onAuthStateChanged((user) => {
-  if (!app) {
-    new Vue({
-      router,
-      store,
-      render: h => h(App)
-    }).$mount('#app');
-  }
+	store.commit('setLoading', true);
+	
+	if (!app) {
+		new Vue({
+			router,
+			store,
+			render: (h) => h(App),
+		}).$mount('#app');
+	}
 
-  if (user) store.dispatch('fetchUser', user);
+	store.commit('setLoading', false);
+
+	if (user)
+		store
+			.dispatch('fetchUser', user)
+			.then(() => store.commit('setLoading', false));
 });
