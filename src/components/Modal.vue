@@ -98,7 +98,7 @@ export default {
       if (this.isBookmarked) {
         usersCollection.doc(userId).update({
           bookmarks: firebase.firestore.FieldValue.arrayRemove({
-            bookmarkId: id,
+            id: id,
             name: this.selectedNote.title
           })
         });

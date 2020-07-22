@@ -5,8 +5,8 @@
     <ul v-else>
       <li
         v-for="bookmark in bookmarks"
-        v-bind:key="bookmark.bookmarkId"
-        v-bind:id="bookmark.bookmarkId"
+        v-bind:key="bookmark.id"
+        v-bind:id="bookmark.id"
         v-on:click="handleChangeView"
       >
         <img src="../assets/icons/book-icon.svg" alt="Bookmark icon" />
