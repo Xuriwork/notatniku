@@ -9,8 +9,8 @@
       <ul>
         <li
           v-for="result of queryResults"
-          v-bind:key="result.noteId"
-          v-bind:id="result.noteId"
+          v-bind:key="result.id"
+          v-bind:id="result.id"
           v-on:click="handleSelectResult"
         >{{ result.title }}</li>
       </ul>
@@ -52,12 +52,12 @@ export default {
             fz.score(toScore, this.searchText, { preparedQuery })
           );
 
-          scores[option.noteId] = Math.max(...scorableFields);
+          scores[option.id] = Math.max(...scorableFields);
 
           return option;
         })
-        .filter(option => scores[option.noteId] > 1)
-        .sort((a, b) => scores[b.noteId] - scores[a.noteId]);
+        .filter(option => scores[option.id] > 1)
+        .sort((a, b) => scores[b.id] - scores[a.id]);
     }
   }
 };

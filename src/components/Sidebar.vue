@@ -20,7 +20,7 @@
     <NotesList
       v-bind:handleChangeView="handleChangeView"
       v-bind:notes="notes"
-      v-bind:selectedNoteId="selectedNote.noteId"
+      v-bind:selectedNoteId="selectedNote.id"
     />
     <div class="add-note-container" v-on:click="handleModal('add')">
       <img src="../assets/icons/add-icon.svg" alt="Add icon" />

@@ -28,6 +28,7 @@
         />
       </header>
       <div class="data-state-container">
+        <button v-on:click="tester">Tester</button>
         <button v-on:click="handleUpdateNote" class="save-button">Save</button>
         <span v-if="state === 'saved' && sessionSavedAt" class="saved-state">
           <img src="../assets/icons/cloud-icon.svg" alt="cloud icon" />
@@ -44,7 +45,7 @@
       <div class="editor-container">
         <Editor
           v-bind:initialContent="computedNoteData.content"
-          v-bind:key="selectedNote.noteId"
+          v-bind:key="selectedNote.id"
           v-bind:updateNoteContent="updateNoteContent"
         />
       </div>
@@ -82,12 +83,12 @@ export default {
     },
     handleChangeView: function(e) {
       this.state = null;
-      const noteId = e.target.id;
-      const index = this.notes.findIndex(note => note.noteId === noteId);
+      const id = e.target.id;
+      const index = this.notes.findIndex(note => note.id === id);
       return this.$store.commit("setSelectedNoteIndex", index);
     },
     handleBookmark: function(note, isBookmarked) {
-      const { noteId: bookmarkId, title: name } = note;
+      const { id: bookmarkId, title: name } = note;
       if (isBookmarked) {
         return usersCollection.doc(this.userId).update({
           bookmarks: firebase.firestore.FieldValue.arrayRemove({
@@ -103,6 +104,14 @@ export default {
         })
       });
     },
+    tester: function() {
+      this.notes.map((note) => {
+        console.log(note.id, note.title);
+      });
+      this.bookmarks.map((bookmark) => {
+        console.log(bookmark.id, bookmark.title);
+      })
+    },
     updateNoteTitle: function(e) {
       this.noteData.title = e.target.innerText;
     },
@@ -116,7 +125,7 @@ export default {
     handleUpdateNote() {
       this.state = "loading";
       const { selectedNote, noteData, userId } = this;
-      const { noteId } = selectedNote;
+      const { id } = selectedNote;
 
       if (this.noteData.title) {
         const sanitizedTitle = this.$sanitize(this.noteData.title);
@@ -127,7 +136,7 @@ export default {
       usersCollection
         .doc(userId)
         .collection("notes")
-        .doc(noteId)
+        .doc(id)
         .update(noteData)
         .then(() => this.setStateToSaved())
         .catch(error => console.error(error));

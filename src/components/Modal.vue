@@ -9,10 +9,10 @@
         <div v-if="modalType === 'trash'" class="trash-list-container" style="marginTop: 10px">
           <span v-if="!trash.length">Your trash is empty</span>
           <ul v-else>
-            <li v-for="note in trash" v-bind:key="note.noteId">
+            <li v-for="note in trash" v-bind:key="note.id">
               <span>{{ note.title }}</span>
-              <button v-bind:id="note.noteId" v-on:click="handleRemoveFromTrash">Remove</button>
-              <button v-bind:id="note.noteId" v-on:click="handleDeleteNote">Delete</button>
+              <button v-bind:id="note.id" v-on:click="handleRemoveFromTrash">Remove</button>
+              <button v-bind:id="note.id" v-on:click="handleDeleteNote">Delete</button>
             </li>
           </ul>
         </div>
@@ -20,7 +20,7 @@
           <li>Save as a PDF</li>
           <li
             class="add-to-trash-button"
-            v-bind:id="selectedNote.noteId"
+            v-bind:id="selectedNote.id"
             v-on:click="handleAddToTrash"
             v-bind:disabled="loading"
           >Add to trash</li>
@@ -69,16 +69,16 @@ export default {
 
       const noteName = this.noteName;
       const userId = this.userId;
-      const noteId = uniqid();
+      const id = uniqid();
       const date = new Date();
 
       usersCollection
         .doc(userId)
         .collection("notes")
-        .doc(noteId)
+        .doc(id)
         .set({
           title: noteName,
-          noteId,
+          id,
           dateCreated: date,
           dateModified: date,
           content: "",
@@ -93,12 +93,12 @@ export default {
       this.loading = true;
 
       const userId = this.userId;
-      const noteId = e.target.id;
+      const id = e.target.id;
 
       if (this.isBookmarked) {
         usersCollection.doc(userId).update({
           bookmarks: firebase.firestore.FieldValue.arrayRemove({
-            bookmarkId: noteId,
+            bookmarkId: id,
             name: this.selectedNote.title
           })
         });
@@ -107,31 +107,31 @@ export default {
       await usersCollection
         .doc(userId)
         .collection("notes")
-        .doc(noteId)
+        .doc(id)
         .update({ isTrash: true })
         .then(() => this.$store.commit("setModalType", null))
         .catch(error => console.error(error));
     },
     handleRemoveFromTrash: async function(e) {
       const userId = this.userId;
-      const noteId = e.target.id;
+      const id = e.target.id;
 
       usersCollection
         .doc(userId)
         .collection("notes")
-        .doc(noteId)
+        .doc(id)
         .update({ isTrash: false })
         .catch(error => console.error(error));
     },
     handleDeleteNote: async function(e) {
       const userId = this.userId;
-      const noteId = e.target.id;
+      const id = e.target.id;
 
       if (confirm("Are you sure you want to delete this note?")) {
         await usersCollection
           .doc(userId)
           .collection("notes")
-          .doc(noteId)
+          .doc(id)
           .delete()
           .catch(error => console.error(error));
       }

@@ -5,10 +5,10 @@
     <ul v-else>
       <li 
         v-for="note in notes" 
-        v-bind:key="note.noteId"
-        v-bind:id="note.noteId"
+        v-bind:key="note.id"
+        v-bind:id="note.id"
         v-on:click="handleChangeView"
-        v-bind:style="{color: note.noteId === selectedNoteId ? '#f89b5e' : ''}"
+        v-bind:style="{color: note.id === selectedNoteId ? '#f89b5e' : ''}"
       >{{ note.title }}</li>
     </ul>
   </div>
