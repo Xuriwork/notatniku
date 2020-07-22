@@ -1,6 +1,6 @@
 <template>
   <div v-on:click="closeModal" class="modal-overlay" id="modal-overlay">
-    <div class="modal">
+    <div class="modal" v-bind:class="'modal-' + modalType">
       <div class="modal-content" v-bind:class="'modal-content-' + modalType">
         <h2>{{ modalInfo.heading }}</h2>
         <form v-if="modalType === 'add'">
@@ -41,7 +41,7 @@
 </template>
 
 <script>
-import { usersCollection } from "../utils/firebase";
+import firebase, { usersCollection } from "../utils/firebase";
 import uniqid from "uniqid";
 
 export default {
@@ -68,7 +68,7 @@ export default {
       this.$store.commit("setModalType", null);
 
       const noteName = this.noteName;
-      const userId = this.$store.getters.userId;
+      const userId = this.userId;
       const noteId = uniqid();
       const date = new Date();
 
@@ -92,8 +92,17 @@ export default {
     handleAddToTrash: async function(e) {
       this.loading = true;
 
-      const userId = this.$store.getters.userId;
+      const userId = this.userId;
       const noteId = e.target.id;
+
+      if (this.isBookmarked) {
+        usersCollection.doc(userId).update({
+          bookmarks: firebase.firestore.FieldValue.arrayRemove({
+            bookmarkId: noteId,
+            name: this.selectedNote.title
+          })
+        });
+      }
 
       await usersCollection
         .doc(userId)
@@ -103,8 +112,8 @@ export default {
         .then(() => this.$store.commit("setModalType", null))
         .catch(error => console.error(error));
     },
-    handleRemoveFromTrash: function(e) {
-      const userId = this.$store.getters.userId;
+    handleRemoveFromTrash: async function(e) {
+      const userId = this.userId;
       const noteId = e.target.id;
 
       usersCollection
@@ -115,7 +124,7 @@ export default {
         .catch(error => console.error(error));
     },
     handleDeleteNote: async function(e) {
-      const userId = this.$store.getters.userId;
+      const userId = this.userId;
       const noteId = e.target.id;
 
       if (confirm("Are you sure you want to delete this note?")) {
@@ -154,8 +163,14 @@ export default {
     selectedNote: function() {
       return this.$store.getters.selectedNote;
     },
+    isBookmarked: function() {
+      return this.$store.getters.isBookmarked;
+    },
     trash: function() {
       return this.$store.getters.trash;
+    },
+    userId: function() {
+      return this.$store.getters.userId;
     }
   }
 };
@@ -264,6 +279,12 @@ export default {
 .modal-trash {
   max-width: 550px;
   width: 100%;
+  padding-left: 25px;
+
+  .cancel-button  {
+    margin-right: 10px;
+    background-color: #f89b5e;
+  }
 }
 
 .trash-list-container {

@@ -140,15 +140,14 @@ export default {
     notes: function() {
       return this.$store.getters.notes;
     },
-    bookmarks: function() {
-      return this.$store.getters.bookmarks;
-    },
     selectedNote: function() {
       return this.$store.getters.selectedNote;
     },
+    bookmarks: function() {
+      return this.$store.getters.bookmarks;
+    },
     isBookmarked: function() {
-      const bookmarksName = this.bookmarks.map(bookmark => bookmark.bookmarkId);
-      return bookmarksName.includes(this.selectedNote.noteId);
+      return this.$store.getters.isBookmarked;
     },
     computedNoteData: function() {
       return {
