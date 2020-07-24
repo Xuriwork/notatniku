@@ -105,17 +105,21 @@ export default {
       });
     },
     tester: function() {
-      this.notes.map((note) => {
+      this.notes.map(note => {
         console.log(note.id, note.title);
       });
-      this.bookmarks.map((bookmark) => {
+      this.bookmarks.map(bookmark => {
         console.log(bookmark.id, bookmark.name);
       });
 
-      const bookmarksName = this.bookmarks.map(bookmark => bookmark.id);
-      console.log(bookmarksName);
+      const arrayOfBookmarkIds = this.bookmarks.map(bookmark => bookmark.id);
+      console.log(arrayOfBookmarkIds);
 
-      const filtered = this.notes.filter(({ title }) => this.bookmarks.includes(title));
+      const filtered = this.notes
+        .filter(({ id }) => arrayOfBookmarkIds.includes(id))
+        .map(note => {
+          return arrayOfBookmarkIds.filter(bookmark => bookmark === note.id);
+        });
       console.log(filtered);
     },
     updateNoteTitle: function(e) {

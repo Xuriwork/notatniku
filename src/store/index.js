@@ -143,8 +143,8 @@ export default new Vuex.Store({
 		bookmarks: (state) => state.userProfile.bookmarks || [],
 		isBookmarked: (state) => {
 			const bookmarks = state.userProfile.bookmarks;
-			const bookmarksName = bookmarks.map(bookmark => bookmark.id);
-			return bookmarksName.includes(state.selectedNote.id);
+			const arrayOfBookmarkIds = bookmarks.map(bookmark => bookmark.id);
+			return arrayOfBookmarkIds.includes(state.selectedNote.id);
 		},
 		modalType: (state) => state.modalType,
 	},
