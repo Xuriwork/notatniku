@@ -28,7 +28,6 @@
         />
       </header>
       <div class="data-state-container">
-        <button v-on:click="tester">Tester</button>
         <button v-on:click="handleUpdateNote" class="save-button">Save</button>
         <span v-if="state === 'saved' && sessionSavedAt" class="saved-state">
           <img src="../assets/icons/cloud-icon.svg" alt="cloud icon" />
@@ -103,24 +102,6 @@ export default {
           name
         })
       });
-    },
-    tester: function() {
-      this.notes.map(note => {
-        console.log(note.id, note.title);
-      });
-      this.bookmarks.map(bookmark => {
-        console.log(bookmark.id, bookmark.name);
-      });
-
-      const arrayOfBookmarkIds = this.bookmarks.map(bookmark => bookmark.id);
-      console.log(arrayOfBookmarkIds);
-
-      const filtered = this.notes
-        .filter(({ id }) => arrayOfBookmarkIds.includes(id))
-        .map(note => {
-          return arrayOfBookmarkIds.filter(bookmark => bookmark === note.id);
-        });
-      console.log(filtered);
     },
     updateNoteTitle: function(e) {
       this.noteData.title = e.target.innerText;
