@@ -66,44 +66,44 @@ export default {
   components: {
     Sidebar,
     Editor,
-    BookmarkIcon
+    BookmarkIcon,
   },
   data() {
     return {
       state: null,
       sessionSavedAt: null,
       noteData: {},
-      error: null
+      error: null,
     };
   },
   methods: {
-    handleModal: function(type) {
+    handleModal: function (type) {
       this.$store.commit("setModalType", type);
     },
-    handleChangeView: function(e) {
+    handleChangeView: function (e) {
       this.state = null;
       const id = e.target.id;
-      const index = this.notes.findIndex(note => note.id === id);
+      const index = this.notes.findIndex((note) => note.id === id);
       return this.$store.commit("setSelectedNoteIndex", index);
     },
-    handleBookmark: function(note, isBookmarked) {
+    handleBookmark: function (note, isBookmarked) {
       const { id: id, title: name } = note;
       if (isBookmarked) {
         return usersCollection.doc(this.userId).update({
           bookmarks: firebase.firestore.FieldValue.arrayRemove({
             id,
-            name
-          })
+            name,
+          }),
         });
       }
       usersCollection.doc(this.userId).update({
         bookmarks: firebase.firestore.FieldValue.arrayUnion({
           id,
-          name
-        })
+          name,
+        }),
       });
     },
-    updateNoteTitle: function(e) {
+    updateNoteTitle: function (e) {
       this.noteData.title = e.target.innerText;
     },
     updateNoteContent(e) {
@@ -115,11 +115,14 @@ export default {
     },
     handleUpdateNote() {
       this.state = "loading";
-      const { selectedNote, noteData, userId } = this;
-      const { id } = selectedNote;
+      const {
+        selectedNote: { id },
+        noteData,
+        userId,
+      } = this;
 
       if (this.noteData.title) {
-        const sanitizedTitle = this.$sanitize(this.noteData.title);
+        const sanitizedTitle = this.$sanitize(this.noteData.title.trim());
         this.noteData.title = sanitizedTitle;
         if (this.noteData.title.trim() === "") this.noteData.title = "Untitled";
       }
@@ -130,32 +133,38 @@ export default {
         .doc(id)
         .update(noteData)
         .then(() => this.setStateToSaved())
-        .catch(error => console.error(error));
-    }
+        .catch((error) => console.error(error));
+    },
   },
   computed: {
-    userId: function() {
+    userId: function () {
       return this.$store.getters.userId;
     },
-    notes: function() {
+    notes: function () {
       return this.$store.getters.notes;
     },
-    selectedNote: function() {
+    selectedNote: function () {
       return this.$store.getters.selectedNote;
     },
-    bookmarks: function() {
-      return this.$store.getters.bookmarks;
+    bookmarks: function () {
+      return this.notes
+        .filter((note) =>
+          this.$store.getters.bookmarks.map((bookmark) => bookmark.id === note.id)
+        )
+        .map((bookmark) => {
+          return { id: bookmark.id, name: bookmark.title };
+        });
     },
-    isBookmarked: function() {
+    isBookmarked: function () {
       return this.$store.getters.isBookmarked;
     },
-    computedNoteData: function() {
+    computedNoteData: function () {
       return {
         content: this.selectedNote.content,
-        title: this.selectedNote.title
+        title: this.selectedNote.title,
       };
-    }
-  }
+    },
+  },
 };
 </script>
 
