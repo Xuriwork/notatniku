@@ -87,20 +87,13 @@ export default {
       return this.$store.commit("setSelectedNoteIndex", index);
     },
     handleBookmark: function (note, isBookmarked) {
-      const { id: id, title: name } = note;
       if (isBookmarked) {
         return usersCollection.doc(this.userId).update({
-          bookmarks: firebase.firestore.FieldValue.arrayRemove({
-            id,
-            name,
-          }),
+          bookmarks: firebase.firestore.FieldValue.arrayRemove(note.id),
         });
       }
       usersCollection.doc(this.userId).update({
-        bookmarks: firebase.firestore.FieldValue.arrayUnion({
-          id,
-          name,
-        }),
+        bookmarks: firebase.firestore.FieldValue.arrayUnion(note.id),
       });
     },
     updateNoteTitle: function (e) {
@@ -148,15 +141,15 @@ export default {
     },
     bookmarks: function () {
       return this.notes
-        .filter((note) =>
-          this.$store.getters.bookmarks.map((bookmark) => bookmark.id === note.id)
-        )
+        .filter((note) => this.$store.getters.bookmarks.includes(note.id))
         .map((bookmark) => {
           return { id: bookmark.id, name: bookmark.title };
-        });
+        })
     },
     isBookmarked: function () {
-      return this.$store.getters.isBookmarked;
+      const bookmarks = this.$store.getters.bookmarks;
+      const arrayOfBookmarkIds = bookmarks.map(bookmark => bookmark);
+			return arrayOfBookmarkIds.includes(this.selectedNote.id);
     },
     computedNoteData: function () {
       return {
