@@ -47,23 +47,23 @@ import uniqid from "uniqid";
 export default {
   name: "Modal",
   props: {
-    modalType: String
+    modalType: String,
   },
   data() {
     return {
       noteName: "",
-      loading: false
+      loading: false,
     };
   },
   methods: {
-    closeModal: function(e) {
+    closeModal: function (e) {
       const modalOverlay = document.getElementById("modal-overlay");
       const cancelButton = document.querySelector(".cancel-button");
       if (e.target === modalOverlay || e.target === cancelButton) {
         this.$store.commit("setModalType", null);
       }
     },
-    handleCreateNote: function() {
+    handleCreateNote: function () {
       this.loading = true;
       this.$store.commit("setModalType", null);
 
@@ -82,25 +82,22 @@ export default {
           dateCreated: date,
           dateModified: date,
           content: "",
-          isTrash: false
+          isTrash: false,
         })
         .then(() => {
           this.$store.commit("setSelectedNoteIndex", 0);
         })
-        .catch(error => console.error(error));
+        .catch((error) => console.error(error));
     },
-    handleAddToTrash: async function(e) {
+    handleAddToTrash: async function (e) {
       this.loading = true;
 
       const userId = this.userId;
       const id = e.target.id;
 
       if (this.isBookmarked) {
-        usersCollection.doc(userId).update({
-          bookmarks: firebase.firestore.FieldValue.arrayRemove({
-            id: id,
-            name: this.selectedNote.title
-          })
+        await usersCollection.doc(userId).update({
+          bookmarks: firebase.firestore.FieldValue.arrayRemove(id),
         });
       }
 
@@ -110,9 +107,9 @@ export default {
         .doc(id)
         .update({ isTrash: true })
         .then(() => this.$store.commit("setModalType", null))
-        .catch(error => console.error(error));
+        .catch((error) => console.error(error));
     },
-    handleRemoveFromTrash: async function(e) {
+    handleRemoveFromTrash: async function (e) {
       const userId = this.userId;
       const id = e.target.id;
 
@@ -121,9 +118,9 @@ export default {
         .collection("notes")
         .doc(id)
         .update({ isTrash: false })
-        .catch(error => console.error(error));
+        .catch((error) => console.error(error));
     },
-    handleDeleteNote: async function(e) {
+    handleDeleteNote: async function (e) {
       const userId = this.userId;
       const id = e.target.id;
 
@@ -133,46 +130,46 @@ export default {
           .collection("notes")
           .doc(id)
           .delete()
-          .catch(error => console.error(error));
+          .catch((error) => console.error(error));
       }
-    }
+    },
   },
   computed: {
-    modalInfo: function() {
+    modalInfo: function () {
       let modalInfo = {};
 
       if (this.modalType === "add") {
         modalInfo = {
           heading: "Create New Note",
-          button: "Create Note"
+          button: "Create Note",
         };
       } else if (this.modalType === "trash") {
         modalInfo = {
-          heading: "Trash"
+          heading: "Trash",
         };
       } else if (this.modalType === "more-items") {
         modalInfo = {
-          heading: "More"
+          heading: "More",
         };
       }
       return modalInfo;
     },
-    notes: function() {
+    notes: function () {
       return this.$store.getters.notes;
     },
-    selectedNote: function() {
+    selectedNote: function () {
       return this.$store.getters.selectedNote;
     },
-    isBookmarked: function() {
+    isBookmarked: function () {
       return this.$store.getters.isBookmarked;
     },
-    trash: function() {
+    trash: function () {
       return this.$store.getters.trash;
     },
-    userId: function() {
+    userId: function () {
       return this.$store.getters.userId;
-    }
-  }
+    },
+  },
 };
 </script>
 
@@ -281,7 +278,7 @@ export default {
   width: 100%;
   padding-left: 25px;
 
-  .cancel-button  {
+  .cancel-button {
     margin-right: 10px;
     background-color: #f89b5e;
   }
