@@ -5,13 +5,11 @@ import router from './router';
 import store from './store';
 import { auth } from './utils/firebase';
 
-import { firestorePlugin } from 'vuefire';
 import Fragment from 'vue-fragment';
 import VueSanitize from 'vue-sanitize';
 
 import 'notyf/notyf.min.css';
 
-Vue.use(firestorePlugin, { wait: true });
 Vue.use(Fragment.Plugin);
 Vue.use(VueSanitize);
 
@@ -20,7 +18,7 @@ Vue.config.productionTip = false;
 let app;
 auth.onAuthStateChanged((user) => {
 	store.commit('setLoading', true);
-	
+
 	if (!app) {
 		new Vue({
 			router,
@@ -31,8 +29,10 @@ auth.onAuthStateChanged((user) => {
 
 	store.commit('setLoading', false);
 
-	if (user)
+	if (user) {
 		store
 			.dispatch('fetchUser', user)
+			.then(() => store.dispatch('fetchUserTokenId'))
 			.then(() => store.commit('setLoading', false));
+	}
 });

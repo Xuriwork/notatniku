@@ -22,7 +22,7 @@
       v-bind:notes="notes"
       v-bind:selectedNoteId="selectedNote.id"
     />
-    <div class="add-note-container" v-on:click="handleModal('add')">
+    <div class="add-note-container" v-on:click="handleModal('create-note')">
       <img src="../assets/icons/add-icon.svg" alt="Add icon" />
       <span>Add Note</span>
     </div>

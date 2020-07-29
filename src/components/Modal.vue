@@ -3,7 +3,7 @@
     <div class="modal" v-bind:class="'modal-' + modalType">
       <div class="modal-content" v-bind:class="'modal-content-' + modalType">
         <h2>{{ modalInfo.heading }}</h2>
-        <form v-if="modalType === 'add'">
+        <form v-if="modalType === 'create-note'">
           <input type="text" v-model="noteName" placeholder="Note name" />
         </form>
         <div v-if="modalType === 'trash'" class="trash-list-container" style="marginTop: 10px">
@@ -19,21 +19,37 @@
         <ul v-if="modalType === 'more-items'" class="more-items-list">
           <li>Save as a PDF</li>
           <li
+            v-on:click="handleUploadImageModalView"
+            v-bind:disabled="loading"
+          >Convert image to text</li>
+          <li
             class="add-to-trash-button"
             v-bind:id="selectedNote.id"
             v-on:click="handleAddToTrash"
             v-bind:disabled="loading"
           >Add to trash</li>
         </ul>
+        <div v-if="modalType === 'uploadImage'" style="marginTop: 10px">
+          <button v-on:click="handleChooseFile" class="choose-file-button">Choose file</button>
+          <span class="image-name">{{ image.name }}</span>
+          <input
+            type="file"
+            ref="fileInput"
+            accept="image/*"
+            v-on:change="handleOnFileChanged"
+            style="display: none"
+          />
+        </div>
       </div>
       <div class="modal-bottom">
         <div>
           <button class="cancel-button" v-on:click="closeModal">Cancel</button>
           <button
-            v-if="modalInfo.button"
-            v-on="{click: modalInfo.button === 'Create Note' ? handleCreateNote : null}"
+            v-if="modalInfo.buttonText"
+            v-on="{click: modalInfo.buttonAction}"
             v-bind:disabled="loading"
-          >{{ modalInfo.button }}</button>
+            class="action-button"
+          >{{ modalInfo.buttonText }}</button>
         </div>
       </div>
     </div>
@@ -43,6 +59,7 @@
 <script>
 import firebase, { usersCollection } from "../utils/firebase";
 import uniqid from "uniqid";
+import api from "../services/api";
 
 export default {
   name: "Modal",
@@ -52,6 +69,9 @@ export default {
   data() {
     return {
       noteName: "",
+      image: {
+        name: "No chosen file",
+      },
       loading: false,
     };
   },
@@ -65,7 +85,6 @@ export default {
     },
     handleCreateNote: function () {
       this.loading = true;
-      this.$store.commit("setModalType", null);
 
       const noteName = this.noteName;
       const userId = this.userId;
@@ -86,6 +105,7 @@ export default {
         })
         .then(() => {
           this.$store.commit("setSelectedNoteIndex", 0);
+          this.$store.commit("setModalType", null);
         })
         .catch((error) => console.error(error));
     },
@@ -133,15 +153,34 @@ export default {
           .catch((error) => console.error(error));
       }
     },
+    handleUploadImageModalView: async function () {
+      this.loading = true;
+      this.$store.commit("setModalType", "uploadImage");
+    },
+    handleChooseFile() {
+      this.$refs.fileInput.click();
+    },
+    handleOnFileChanged(e) {
+      const file = e.target.files[0];
+      this.image = file;
+    },
+    handleUploadImage: async function () {
+      this.loading = true;
+      const image = this.image;
+      api
+        .post("/convert-image-to-text", image)
+        .then((response) => console.log(response));
+    },
   },
   computed: {
     modalInfo: function () {
       let modalInfo = {};
 
-      if (this.modalType === "add") {
+      if (this.modalType === "create-note") {
         modalInfo = {
           heading: "Create New Note",
-          button: "Create Note",
+          buttonText: "Create Note",
+          buttonAction: this.handleCreateNote,
         };
       } else if (this.modalType === "trash") {
         modalInfo = {
@@ -150,6 +189,12 @@ export default {
       } else if (this.modalType === "more-items") {
         modalInfo = {
           heading: "More",
+        };
+      } else if (this.modalType === "uploadImage") {
+        modalInfo = {
+          heading: "Upload an image",
+          buttonText: "Upload",
+          buttonAction: this.handleUploadImage,
         };
       }
       return modalInfo;
@@ -242,7 +287,12 @@ export default {
     justify-content: flex-end;
     margin-top: 10px;
 
-    button:nth-child(2) {
+    button {
+      padding: 8px 12px;
+      border-radius: 4px;
+    }
+
+    .action-button {
       margin-left: 20px;
       color: #fff;
       background: linear-gradient(0.31deg, #f89b5e 0.7%, #f7b284 99.3%);
@@ -256,21 +306,30 @@ export default {
     .cancel-button {
       background: linear-gradient(0.31deg, #e2e2e2 0.7%, #ececec 99.3%);
     }
-
-    button {
-      padding: 8px 12px;
-      border-radius: 4px;
-    }
   }
+}
 
-  .add-to-trash-button {
-    color: #ffffff;
-    background-color: #ff5959;
-    display: inline-block;
-    padding: 4px 15px;
-    border-radius: 4px;
-    font-weight: 500;
-  }
+.add-to-trash-button {
+  color: #ffffff;
+  background-color: #ff5959;
+  display: inline-block;
+  padding: 4px 15px;
+  border-radius: 4px;
+  font-weight: 500;
+  margin-top: 5px;
+}
+
+.choose-file-button {
+  padding: 10px 20px;
+  margin-right: 10px;
+  background: linear-gradient(0.31deg, #40514e 0.7%, #52615e 99.3%);
+  color: #ffffff;
+  box-shadow: 0 3px 6px rgba(107, 62, 19, 0.15);
+  border-radius: 4px;
+}
+
+.image-name {
+  color: #40514e;
 }
 
 .modal-trash {

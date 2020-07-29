@@ -13,6 +13,7 @@ export default new Vuex.Store({
 	state: {
 		loading: true,
 		user: {},
+		idToken: null,
 		userProfile: {},
 		errors: {},
 		notes: [],
@@ -27,6 +28,9 @@ export default new Vuex.Store({
 		},
 		setUser(state, payload) {
 			state.user = payload;
+		},
+		setIdToken(state, payload) {
+			state.idToken = payload;
 		},
 		setUserProfile(state, payload) {
 			state.userProfile = payload;
@@ -98,6 +102,11 @@ export default new Vuex.Store({
 		async handleForgotPassword(_, email) {
 			await auth.sendPasswordResetEmail(email);
 		},
+		async fetchUserTokenId({ commit }) {
+			auth.currentUser.getIdToken().then((idToken) => {
+				commit('setIdToken', idToken);
+			});
+		},
 		async fetchUser({ commit }, user) {
 			commit('setLoading', true);
 
@@ -136,6 +145,7 @@ export default new Vuex.Store({
 		loading: (state) => state.loading,
 		user: (state) => state.user,
 		userId: (state) => state.user.uid,
+		idToken: (state) => state.idToken,
 		notes: (state) => state.notes,
 		trash: (state) => state.trash,
 		selectedNote: (state) => state.notes[state.selectedNoteIndex] || {},
