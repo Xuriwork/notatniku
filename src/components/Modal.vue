@@ -26,7 +26,7 @@
             v-bind:disabled="loading"
           >Add to trash</li>
         </ul>
-        <div v-if="modalType === 'uploadImage'" style="marginTop: 10px">
+        <div v-if="modalType === 'uploadImage'">
           <form>
             <button v-on:click.prevent="handleChooseFile" class="choose-file-button">Choose file</button>
             <span class="image-name" v-if="image">{{ image.name }}</span>
@@ -224,10 +224,12 @@ export default {
     },
     handleCopyToClipboard: async function () {
       const text = this.extractedText;
-      navigator.clipboard.writeText(text).then(() => {
-        notyf.success({  message: "Copied to clipboard" });
-      })
-      .catch((error) => console.error(error));
+      navigator.clipboard
+        .writeText(text)
+        .then(() => {
+          notyf.success({ message: "Copied to clipboard" });
+        })
+        .catch((error) => console.error(error));
     },
   },
   computed: {
@@ -313,18 +315,6 @@ export default {
     }
   }
 
-  .modal-content-uploadImage > div {
-    display: flex;
-    flex-direction: column;
-  }
-
-  .modal-content-viewExtractedText > div {
-    background-color: #e7e7e7;
-    padding: 10px;
-    border-radius: 5px;
-    cursor: pointer;
-  }
-
   .more-items-list {
     margin-top: 15px;
 
@@ -385,6 +375,39 @@ export default {
   }
 }
 
+.modal-trash {
+  max-width: 550px;
+  width: 100%;
+  padding-left: 25px;
+
+  .cancel-button {
+    margin-right: 10px;
+    background-color: #f89b5e;
+  }
+}
+
+.modal-viewExtractedText {
+  max-width: 550px;
+  width: 100%;
+}
+
+.modal-content-uploadImage > div {
+  display: flex;
+  flex-direction: column;
+  margin-top: 10px;
+}
+
+.modal-content-viewExtractedText > div {
+  background-color: #e7e7e7;
+  margin: 10px 0;
+  padding: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  line-height: 1.8;
+  max-height: 600px;
+  overflow-y: auto;
+}
+
 .add-to-trash-button {
   color: #ffffff;
   background-color: #ff5959;
@@ -437,17 +460,6 @@ export default {
   text-decoration: underline;
   text-underline-position: under;
   cursor: pointer;
-}
-
-.modal-trash {
-  max-width: 550px;
-  width: 100%;
-  padding-left: 25px;
-
-  .cancel-button {
-    margin-right: 10px;
-    background-color: #f89b5e;
-  }
 }
 
 .trash-list-container {
