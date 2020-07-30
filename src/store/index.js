@@ -15,8 +15,10 @@ const notyf = new Notyf({
 });
 
 Vue.use(Vuex);
-//https://us-central1-notatniku.cloudfunctions.net/api
-axios.defaults.baseURL = 'http://localhost:5001/notatniku/us-central1/api';
+
+if (process.env.NODE_ENV === 'development') {
+	axios.defaults.baseURL = 'http://localhost:5001/notatniku/us-central1/api'
+} else axios.defaults.baseURL = 'https://us-central1-notatniku.cloudfunctions.net/api';
 
 export default new Vuex.Store({
 	state: {

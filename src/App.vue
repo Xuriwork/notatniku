@@ -13,16 +13,16 @@ import Loading from "./components/Loading";
 export default {
   components: {
     Modal,
-    Loading
+    Loading,
   },
   computed: {
-    loading: function() {
+    loading: function () {
       return this.$store.getters.loading;
     },
-    modalType: function() {
+    modalType: function () {
       return this.$store.getters.modalType;
-    }
-  }
+    },
+  },
 };
 </script>
 
@@ -85,12 +85,19 @@ a {
       margin-top: 10px;
     }
 
+    label {
+      width: 100%;
+      margin-top: 5px;
+      margin-bottom: 2px;
+      margin-left: 5px;
+    }
+
     h1 {
       margin-top: 25px;
     }
 
     a span {
-      color: #be9477;
+      color: #ae4610;
       font-weight: 600;
     }
 
@@ -145,7 +152,7 @@ a {
       border-radius: 8px;
       display: block;
       width: 100%;
-      margin-top: 1em;
+
       font-family: "Merriweather", sans-serif;
       box-shadow: (0 1px 1px rgba(black, 0.1));
       resize: none;
@@ -161,6 +168,13 @@ a {
 @media (max-width: 1100px) {
   .background-image-container {
     display: none;
+  }
+}
+
+@media (max-width: 600px) {
+  .form-container {
+    padding: 0 10px;
+    box-sizing: border-box;
   }
 }
 </style>

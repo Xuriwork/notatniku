@@ -5,29 +5,37 @@
       <h1>Welcome!</h1>
       <p>Sign up below.</p>
       <form>
+        <label for="name">Name</label>
         <input
           type="text"
+          id="name"
           v-model.trim="name"
           placeholder="Name"
           v-bind:style="{ border: errors.name ? '1px solid #ff5959' : null }"
         />
         <p class="input-field-error">{{ errors.name }}</p>
+        <label for="email">Email</label>
         <input
           type="email"
+          id="email"
           v-model.trim="email"
           placeholder="Email"
           v-bind:style="{ border: errors.email ? '1px solid #ff5959' : null }"
         />
         <p class="input-field-error">{{ errors.email }}</p>
+        <label for="password">Password</label>
         <input
           type="password"
+          id="password"
           v-model.trim="password"
           placeholder="Password"
           v-bind:style="{ border: errors.password ? '1px solid #ff5959' : null }"
         />
         <p class="input-field-error">{{ errors.password }}</p>
+        <label for="confirmPassword">Confirm Password</label>
         <input
           type="password"
+          id="confirmPassword"
           v-model.trim="confirmPassword"
           placeholder="Confirm Password"
           v-bind:style="{
