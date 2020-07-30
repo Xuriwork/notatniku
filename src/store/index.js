@@ -6,7 +6,13 @@ import { auth, usersCollection } from '../utils/firebase';
 import axios from 'axios';
 import { Notyf } from 'notyf';
 
-const notyf = new Notyf();
+const notyf = new Notyf({
+	duration: 9000,
+	position: {
+		x: 'right',
+		y: 'top',
+	},
+});
 
 Vue.use(Vuex);
 //https://us-central1-notatniku.cloudfunctions.net/api
@@ -62,16 +68,7 @@ export default new Vuex.Store({
 		async signIn({ dispatch }, data) {
 			const { user } = await auth
 				.signInWithEmailAndPassword(data.email, data.password)
-				.catch((error) => {
-					notyf.error({
-						message: error.message,
-						duration: 9000,
-						position: {
-							x: 'left',
-							y: 'top',
-						},
-					});
-				});
+				.catch((error) => notyf.error({ message: error.message }));
 			dispatch('fetchUser', user);
 		},
 		async signUp({ dispatch }, data) {
@@ -84,16 +81,7 @@ export default new Vuex.Store({
 						dateCreated: new Date(),
 					});
 				})
-				.catch((error) => {
-					notyf.error({
-						message: error.message,
-						duration: 9000,
-						position: {
-							x: 'left',
-							y: 'top',
-						},
-					});
-				});
+				.catch((error) => notyf.error({ message: error.message }));
 			dispatch('fetchUser', user);
 		},
 		async handleSignOut({ commit }) {

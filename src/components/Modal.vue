@@ -18,10 +18,7 @@
         </div>
         <ul v-if="modalType === 'more-items'" class="more-items-list">
           <li>Save as a PDF</li>
-          <li
-            v-on:click="handleUploadImageModalView"
-            v-bind:disabled="loading"
-          >Convert image to text</li>
+          <li v-on:click="changeModalToUploadImage" v-bind:disabled="loading">Convert image to text</li>
           <li
             class="add-to-trash-button"
             v-bind:id="selectedNote.id"
@@ -41,12 +38,21 @@
               style="display: none"
             />
           </form>
-          <div class="progress-bar">
+          <div class="progress-bar-container">
             <span class="bar">
               <span ref="progressRef" class="progress"></span>
             </span>
           </div>
+          <span
+            v-if="extractedText"
+            v-on:click="changeModalToViewExtractedText"
+            class="extracted-text-ready-span"
+          >Click to view text</span>
         </div>
+        <div
+          v-if="modalType === 'viewExtractedText'"
+          v-on:click="handleCopyToClipboard"
+        >{{ extractedText }}</div>
       </div>
       <div class="modal-bottom">
         <div>
@@ -67,6 +73,15 @@
 import firebase, { usersCollection } from "../utils/firebase";
 import uniqid from "uniqid";
 import axios from "axios";
+import { Notyf } from "notyf";
+
+const notyf = new Notyf({
+  duration: 9000,
+  position: {
+    x: "right",
+    y: "top",
+  },
+});
 
 export default {
   name: "Modal",
@@ -160,8 +175,11 @@ export default {
           .catch((error) => console.error(error));
       }
     },
-    handleUploadImageModalView: async function () {
+    changeModalToUploadImage: function () {
       this.$store.commit("setModalType", "uploadImage");
+    },
+    changeModalToViewExtractedText: function () {
+      this.$store.commit("setModalType", "viewExtractedText");
     },
     handleChooseFile() {
       this.$refs.fileInput.click();
@@ -170,9 +188,12 @@ export default {
       this.image = e.target.files[0];
     },
     handleUploadImage: async function () {
+      const image = this.image;
+
+      if (!image) return;
+
       this.loading = true;
       const token = await this.$store.getters.idToken;
-      const image = this.image;
       const userId = this.userId;
       const headers = { Authorization: `Bearer ${token}` };
 
@@ -182,9 +203,11 @@ export default {
       uploadTask.on(
         "state_changed",
         (snapshot) => {
-          let progress = ((snapshot.bytesTransferred / snapshot.totalBytes) * 100) + '%';
+          let progress =
+            (snapshot.bytesTransferred / snapshot.totalBytes) * 100 + "%";
           this.$refs.progressRef.style.width = progress;
-        }, (error) => console.error(error),
+        },
+        (error) => console.error(error),
         () => {
           const filePath = uploadTask.metadata_.fullPath;
 
@@ -193,10 +216,18 @@ export default {
             .then((res) => {
               this.extractedText = res.data.text;
               this.loading = false;
+              this.image = null;
             })
             .catch((error) => (this.error = error));
         }
       );
+    },
+    handleCopyToClipboard: async function () {
+      const text = this.extractedText;
+      navigator.clipboard.writeText(text).then(() => {
+        notyf.success({  message: "Copied to clipboard" });
+      })
+      .catch((error) => console.error(error));
     },
   },
   computed: {
@@ -222,6 +253,12 @@ export default {
           heading: "Upload an image",
           buttonText: "Upload",
           buttonAction: this.handleUploadImage,
+        };
+      } else if (this.modalType === "viewExtractedText") {
+        modalInfo = {
+          heading: "Extracted text",
+          buttonText: "Copy text",
+          buttonAction: this.handleCopyToClipboard,
         };
       }
       return modalInfo;
@@ -279,6 +316,13 @@ export default {
   .modal-content-uploadImage > div {
     display: flex;
     flex-direction: column;
+  }
+
+  .modal-content-viewExtractedText > div {
+    background-color: #e7e7e7;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
   }
 
   .more-items-list {
@@ -364,10 +408,11 @@ export default {
   color: #40514e;
 }
 
-.progress-bar {
+.progress-bar-container {
   border-radius: 60px;
   overflow: hidden;
   width: 100%;
+  margin: 10px 0;
 
   span {
     display: block;
@@ -387,8 +432,11 @@ export default {
   transition: width 2s ease-in-out;
 }
 
-.progress-bar {
-  margin: 10px 0;
+.extracted-text-ready-span {
+  color: #53bda9;
+  text-decoration: underline;
+  text-underline-position: under;
+  cursor: pointer;
 }
 
 .modal-trash {
