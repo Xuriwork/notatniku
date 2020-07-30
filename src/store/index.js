@@ -3,11 +3,14 @@ import Vuex from 'vuex';
 import router from '../router';
 import { auth, usersCollection } from '../utils/firebase';
 
+import axios from 'axios';
 import { Notyf } from 'notyf';
 
 const notyf = new Notyf();
 
 Vue.use(Vuex);
+//https://us-central1-notatniku.cloudfunctions.net/api
+axios.defaults.baseURL = 'http://localhost:5001/notatniku/us-central1/api';
 
 export default new Vuex.Store({
 	state: {
@@ -103,7 +106,7 @@ export default new Vuex.Store({
 			await auth.sendPasswordResetEmail(email);
 		},
 		async fetchUserTokenId({ commit }) {
-			auth.currentUser.getIdToken().then((idToken) => {
+			auth.currentUser.getIdToken(true).then((idToken) => {
 				commit('setIdToken', idToken);
 			});
 		},
@@ -153,7 +156,7 @@ export default new Vuex.Store({
 		bookmarks: (state) => state.userProfile.bookmarks || [],
 		isBookmarked: (state) => {
 			const bookmarks = state.userProfile.bookmarks;
-			const arrayOfBookmarkIds = bookmarks.map(bookmark => bookmark);
+			const arrayOfBookmarkIds = bookmarks.map((bookmark) => bookmark);
 			return arrayOfBookmarkIds.includes(state.selectedNote.id);
 		},
 		modalType: (state) => state.modalType,

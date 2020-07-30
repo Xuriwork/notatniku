@@ -1,4 +1,5 @@
 const admin = require('firebase-admin');
+
 admin.initializeApp();
 
 exports.validateFirebaseIdToken = async (req, res, next) => {

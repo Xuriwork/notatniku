@@ -30,15 +30,22 @@
           >Add to trash</li>
         </ul>
         <div v-if="modalType === 'uploadImage'" style="marginTop: 10px">
-          <button v-on:click="handleChooseFile" class="choose-file-button">Choose file</button>
-          <span class="image-name">{{ image.name }}</span>
-          <input
-            type="file"
-            ref="fileInput"
-            accept="image/*"
-            v-on:change="handleOnFileChanged"
-            style="display: none"
-          />
+          <form>
+            <button v-on:click.prevent="handleChooseFile" class="choose-file-button">Choose file</button>
+            <span class="image-name" v-if="image">{{ image.name }}</span>
+            <input
+              type="file"
+              ref="fileInput"
+              accept="image/*"
+              v-on:change="handleOnFileChanged"
+              style="display: none"
+            />
+          </form>
+          <div class="progress-bar">
+            <span class="bar">
+              <span ref="progressRef" class="progress"></span>
+            </span>
+          </div>
         </div>
       </div>
       <div class="modal-bottom">
@@ -59,7 +66,7 @@
 <script>
 import firebase, { usersCollection } from "../utils/firebase";
 import uniqid from "uniqid";
-import api from "../services/api";
+import axios from "axios";
 
 export default {
   name: "Modal",
@@ -69,10 +76,10 @@ export default {
   data() {
     return {
       noteName: "",
-      image: {
-        name: "No chosen file",
-      },
+      image: null,
+      error: null,
       loading: false,
+      extractedText: null,
     };
   },
   methods: {
@@ -154,22 +161,42 @@ export default {
       }
     },
     handleUploadImageModalView: async function () {
-      this.loading = true;
       this.$store.commit("setModalType", "uploadImage");
     },
     handleChooseFile() {
       this.$refs.fileInput.click();
     },
     handleOnFileChanged(e) {
-      const file = e.target.files[0];
-      this.image = file;
+      this.image = e.target.files[0];
     },
     handleUploadImage: async function () {
       this.loading = true;
+      const token = await this.$store.getters.idToken;
       const image = this.image;
-      api
-        .post("/convert-image-to-text", image)
-        .then((response) => console.log(response));
+      const userId = this.userId;
+      const headers = { Authorization: `Bearer ${token}` };
+
+      const storageRef = firebase.app().storage("gs://notatniku_ocr").ref();
+      const uploadTask = storageRef.child(`${userId}/${image.name}`).put(image);
+
+      uploadTask.on(
+        "state_changed",
+        (snapshot) => {
+          let progress = ((snapshot.bytesTransferred / snapshot.totalBytes) * 100) + '%';
+          this.$refs.progressRef.style.width = progress;
+        }, (error) => console.error(error),
+        () => {
+          const filePath = uploadTask.metadata_.fullPath;
+
+          axios
+            .post("/convert-image-to-text", { filePath }, { headers })
+            .then((res) => {
+              this.extractedText = res.data.text;
+              this.loading = false;
+            })
+            .catch((error) => (this.error = error));
+        }
+      );
     },
   },
   computed: {
@@ -247,6 +274,11 @@ export default {
     h2 {
       font-size: 1.4em;
     }
+  }
+
+  .modal-content-uploadImage > div {
+    display: flex;
+    flex-direction: column;
   }
 
   .more-items-list {
@@ -330,6 +362,33 @@ export default {
 
 .image-name {
   color: #40514e;
+}
+
+.progress-bar {
+  border-radius: 60px;
+  overflow: hidden;
+  width: 100%;
+
+  span {
+    display: block;
+  }
+}
+
+.bar {
+  background: rgba(0, 0, 0, 0.075);
+  height: 5px;
+}
+
+.progress {
+  background: #83e85a;
+  color: #fff;
+  height: 100%;
+  width: 0%;
+  transition: width 2s ease-in-out;
+}
+
+.progress-bar {
+  margin: 10px 0;
 }
 
 .modal-trash {
