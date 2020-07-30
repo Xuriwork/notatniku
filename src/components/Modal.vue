@@ -210,7 +210,7 @@ export default {
         (error) => console.error(error),
         () => {
           const filePath = uploadTask.metadata_.fullPath;
-
+          
           axios
             .post("/convert-image-to-text", { filePath }, { headers })
             .then((res) => {
