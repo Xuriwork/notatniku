@@ -1,5 +1,12 @@
 # notatniku
 
+
+## The Amazing Designer
+```
+[Monika Michalczyk](https://dribbble.com/michalczyk).
+Where I got the inspiration from: [Notebook - Light and Dark Mode](https://dribbble.com/shots/5922909-Notebook-Light-and-Dark-Mode).
+```
+
 ## Project setup
 ```
 yarn install

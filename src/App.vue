@@ -97,7 +97,7 @@ a {
     }
 
     a span {
-      color: #ae4610;
+      color: #5c5a56;
       font-weight: 600;
     }
 
