@@ -22,6 +22,4 @@ pnpm-debug.log*
 *.sw?
 functions/utils/keyfile.json
 firebase-debug.log
-.firebase/hosting.ZGlzdA.cache
-.firebase/hosting.ZGlzdA.cache
-.firebase/hosting.ZGlzdA.cache
+.firebase/hosting.*
