@@ -71,6 +71,7 @@ export default {
 .sidebar-component {
   display: flex;
   flex-direction: column;
+  position: relative;
   background-color: #fdfbf7;
   color: #5c5a56;
   width: 380px;
@@ -81,9 +82,9 @@ export default {
   .user-dropdown {
     position: absolute;
     top: 100px;
-    background-color: #fcedcf;
+    background-color: #ffe8dd;
     border-radius: 5px;
-    width: 240px;
+    width: calc(100% - 60px);
     z-index: 2;
     padding: 5px 0;
     animation: show 0.5s;
@@ -128,14 +129,15 @@ export default {
       padding: 10px;
 
       &:hover {
-        background-color: #fff6e3;
+        background-color: #f7bb9f;
+        color: #ffffff;
       }
     }
 
     hr {
       margin-bottom: 4px;
       border: none;
-      border-bottom: 0.5px #dac8a4 solid;
+      border-bottom: 0.5px #a8a39d8c solid;
     }
   }
 
@@ -148,7 +150,7 @@ export default {
     user-select: none;
 
     &:hover {
-      background-color: #fdbc715e;
+      background-color: #fca67c73;
     }
 
     img {
