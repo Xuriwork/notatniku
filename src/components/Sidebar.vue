@@ -13,7 +13,18 @@
         <h5>{{ name }}</h5>
       </div>
       <hr />
-      <button>Sign out ({{ email }})</button>
+      <ul>
+        <li>
+          <a
+            href="https://dribbble.com/shots/5922909-Notebook-Light-and-Dark-Mode"
+            target="_blank"
+            rel="noopener noreferrer"
+          >Credits to Monika<span role="img">🧡</span></a>
+        </li>
+        <li>
+          <button>Sign out ({{ email }})</button>
+        </li>
+      </ul>
     </div>
     <Search v-bind:handleChangeView="handleChangeView" />
     <BookmarksList v-bind:bookmarks="bookmarks" v-bind:handleChangeView="handleChangeView" />
@@ -43,27 +54,27 @@ export default {
   components: {
     Search,
     BookmarksList,
-    NotesList
+    NotesList,
   },
   props: {
     notes: Array,
     bookmarks: Array,
     handleChangeView: Function,
     handleModal: Function,
-    selectedNote: Object
+    selectedNote: Object,
   },
   data() {
     return {
       dropdownOpen: false,
       name: this.$store.getters.user.displayName,
-      email: this.$store.getters.user.email
+      email: this.$store.getters.user.email,
     };
   },
   methods: {
-    toggleDropdown: function() {
+    toggleDropdown: function () {
       this.dropdownOpen = !this.dropdownOpen;
-    }
-  }
+    },
+  },
 };
 </script>
 
@@ -138,6 +149,27 @@ export default {
       margin-bottom: 4px;
       border: none;
       border-bottom: 0.5px #a8a39d8c solid;
+    }
+
+    ul {
+      li {
+        font-weight: 500;
+        font-size: 0.9em;
+      }
+
+      a {
+        padding: 10px;
+        width: 100%;
+
+        span[role=img] {
+          margin-left: 5px;
+        }
+
+        &:hover {
+          background-color: #f7bb9f;
+          color: #ffffff;
+        }
+      }
     }
   }
 
