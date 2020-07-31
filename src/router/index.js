@@ -38,7 +38,9 @@ const router = new VueRouter({
 
 router.beforeEach((to, from, next) => {
   const requiresAuth = to.matched.some(x => x.meta.requiresAuth);
-  if (requiresAuth && !auth.currentUser) next('/sign-in');
+  if (requiresAuth && !auth.currentUser) {
+    next({ path: '/sign-in', query: { redirect: to.fullPath } });
+  }
   else next();
 });
 

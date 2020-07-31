@@ -1,9 +1,9 @@
 <template>
-  <fragment>
+  <div class="app-component">
     <Loading v-if="loading" />
     <router-view v-else />
     <Modal v-if="modalType" v-bind:modalType="modalType" />
-  </fragment>
+  </div>
 </template>
 
 <script>
@@ -29,6 +29,7 @@ export default {
 <style lang="scss">
 html,
 body,
+
 #app {
   height: 100%;
   font-family: Quicksand;
@@ -65,6 +66,11 @@ a {
 
 a {
   text-decoration: none;
+}
+
+.app-component {
+  width: 100%;
+  height: 100%;
 }
 
 .sign-in-component,

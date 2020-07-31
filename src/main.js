@@ -19,6 +19,10 @@ let app;
 auth.onAuthStateChanged((user) => {
 	store.commit('setLoading', true);
 
+	if (user) {
+		store.dispatch('fetchUser', user).then(() => store.dispatch('fetchUserTokenId'))
+	}
+
 	if (!app) {
 		new Vue({
 			router,
@@ -28,11 +32,4 @@ auth.onAuthStateChanged((user) => {
 	}
 
 	store.commit('setLoading', false);
-
-	if (user) {
-		store
-			.dispatch('fetchUser', user)
-			.then(() => store.dispatch('fetchUserTokenId'))
-			.then(() => store.commit('setLoading', false));
-	}
 });

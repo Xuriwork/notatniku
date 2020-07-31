@@ -67,11 +67,15 @@ export default new Vuex.Store({
 		},
 	},
 	actions: {
-		async signIn({ dispatch }, data) {
+		async signIn({ dispatch, commit }, data) {
 			const { user } = await auth
 				.signInWithEmailAndPassword(data.email, data.password)
 				.catch((error) => notyf.error({ message: error.message }));
-			dispatch('fetchUser', user);
+				
+			dispatch('fetchUser', user).then(() => {
+				router.push('/');
+				commit('setLoading', false);
+			});
 		},
 		async signUp({ dispatch }, data) {
 			const { user } = await auth
@@ -124,14 +128,6 @@ export default new Vuex.Store({
 					},
 					(error) => console.error(error)
 				);
-
-			if (
-				router.currentRoute.path === '/sign-in' ||
-				router.currentRoute.path === '/sign-up' ||
-				router.currentRoute.path === '/forgot-password'
-			) {
-				router.push('/');
-			}
 		},
 	},
 	getters: {

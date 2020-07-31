@@ -301,6 +301,7 @@ export default {
     height: 40px;
     background: transparent;
     user-select: none;
+    -webkit-tap-highlight-color: transparent;
 
     &:focus {
       outline: none;
