@@ -43,25 +43,22 @@
       </div>
     </fragment>
     <Search v-show="sidepanelOpen" v-bind:handleChangeView="handleChangeView" />
-    <BookmarksList
-      v-show="sidepanelOpen"
-      v-bind:bookmarks="bookmarks"
-      v-bind:handleChangeView="handleChangeView"
-    />
-    <NotesList
-      v-show="sidepanelOpen"
-      v-bind:handleChangeView="handleChangeView"
-      v-bind:notes="notes"
-      v-bind:selectedNoteId="selectedNote.id"
-    />
-    <div v-show="sidepanelOpen" class="add-note-container" v-on:click="handleModal('create-note')">
-      <img src="../assets/icons/add-icon.svg" alt="Add icon" />
-      <span>Add Note</span>
-    </div>
-    <div v-show="sidepanelOpen" class="trash-item-container" v-on:click="handleModal('trash')">
-      <img src="../assets/icons/delete-bin-icon.svg" alt="Trashcan icon" />
-      <span>Trash</span>
-    </div>
+    <fragment v-if="sidepanelOpen">
+      <BookmarksList v-bind:bookmarks="bookmarks" v-bind:handleChangeView="handleChangeView" />
+      <NotesList
+        v-bind:handleChangeView="handleChangeView"
+        v-bind:notes="notes"
+        v-bind:selectedNoteId="selectedNote.id"
+      />
+      <div class="add-note-container" v-on:click="handleModal('create-note')">
+        <img src="../assets/icons/add-icon.svg" alt="Add icon" />
+        <span>Add Note</span>
+      </div>
+      <div class="trash-item-container" v-on:click="handleModal('trash')">
+        <img src="../assets/icons/delete-bin-icon.svg" alt="Trashcan icon" />
+        <span>Trash</span>
+      </div>
+    </fragment>
     <button v-on:click="toggleSidepanel" class="toggle-sidepanel-button">
       <img v-if="sidepanelOpen" src="../assets/icons/arrow-left-circle.svg" alt="Close Sidepanel" />
       <img v-else src="../assets/icons/arrow-right-circle.svg" alt="Open Sidepanel" />
@@ -250,7 +247,8 @@ export default {
 
     ul {
       overflow-y: auto;
-      max-height: 400px;
+      overflow-x: hidden;
+      max-height: 200px;
       padding-right: 2px;
 
       &::-webkit-scrollbar {
