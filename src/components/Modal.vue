@@ -70,7 +70,7 @@
 </template>
 
 <script>
-import firebase, { usersCollection } from "../utils/firebase";
+import firebase, { db, usersCollection } from "../utils/firebase";
 import uniqid from "uniqid";
 import axios from "axios";
 import { Notyf } from "notyf";
@@ -136,18 +136,20 @@ export default {
 
       const userId = this.userId;
       const id = e.target.id;
+      const batch = db.batch();
+      const userRef = usersCollection.doc(userId);
+      const noteRef = usersCollection.doc(userId).collection("notes").doc(id);
 
       if (this.isBookmarked) {
-        await usersCollection.doc(userId).update({
+        await batch.update(userRef, {
           bookmarks: firebase.firestore.FieldValue.arrayRemove(id),
         });
       }
 
-      await usersCollection
-        .doc(userId)
-        .collection("notes")
-        .doc(id)
-        .update({ isTrash: true })
+      batch.update(noteRef, { isTrash: true });
+
+      batch
+        .commit()
         .then(() => this.$store.commit("setModalType", null))
         .catch((error) => console.error(error));
     },
@@ -210,7 +212,7 @@ export default {
         (error) => console.error(error),
         () => {
           const filePath = uploadTask.metadata_.fullPath;
-          
+
           axios
             .post("/convert-image-to-text", { filePath }, { headers })
             .then((res) => {

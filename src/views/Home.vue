@@ -298,13 +298,17 @@ export default {
 
 .home-view-container {
   padding: 40px;
-  width: calc(100% - 60px);
-  box-sizing: border-box;
+  width: 100%;
 }
 
 @media (max-width: 600px) {
   .home-view-container {
     padding: 40px 10px;
+    margin-left: 60px;
+  }
+
+  .sidepanel-component {
+    position: absolute;
   }
 }
 </style>
