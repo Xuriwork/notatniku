@@ -18,7 +18,6 @@
         <span>{{ email }}</span>
       </div>
     </div>
-    <fragment>
       <div class="user-dropdown" v-show="sidepanelOpen && dropdownOpen">
         <div class="user-info-div">
           <div>{{ name.charAt(0) }}</div>
@@ -41,7 +40,6 @@
           </li>
         </ul>
       </div>
-    </fragment>
     <Search v-show="sidepanelOpen" v-bind:handleChangeView="handleChangeView" />
     <fragment v-if="sidepanelOpen">
       <BookmarksList v-bind:bookmarks="bookmarks" v-bind:handleChangeView="handleChangeView" />
@@ -99,6 +97,7 @@ export default {
     },
     toggleSidepanel: function () {
       this.sidepanelOpen = !this.sidepanelOpen;
+      if (this.dropdownOpen) this.dropdownOpen = false;
     },
   },
 };
@@ -108,6 +107,7 @@ export default {
 .sidepanel-component {
   display: flex;
   flex-direction: column;
+  position: relative;
   background-color: #fdfbf7;
   color: #5c5a56;
   left: 0;
@@ -133,7 +133,7 @@ export default {
       }
       to {
         opacity: 1;
-        top: 100px;
+        top: 90px;
       }
     }
 
