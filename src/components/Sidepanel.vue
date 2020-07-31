@@ -1,46 +1,71 @@
 <template>
-  <div class="sidebar-component">
-    <div class="sidebar-top" v-on:click="toggleDropdown">
+  <div
+    class="sidepanel-component"
+    v-bind:style="{
+      width: sidepanelOpen ? '380px' : '60px', 
+      padding: sidepanelOpen ? '35px 30px' : '35px 0',
+      alignItems: sidepanelOpen ? 'initial' : 'center',
+      zIndex: sidepanelOpen ? '2' : '1',
+    }"
+  >
+    <div
+      class="sidepanel-top"
+      v-on="{click: !sidepanelOpen ? toggleSidepanel : (sidepanelOpen && toggleDropdown)}"
+    >
       <img src="../assets/icons/notatniku-logo.svg" alt="logo" class="logo" />
-      <div>
+      <div v-show="sidepanelOpen">
         <h3>{{ name }}</h3>
         <span>{{ email }}</span>
       </div>
     </div>
-    <div class="user-dropdown" v-show="dropdownOpen">
-      <div class="user-info-div">
-        <div>{{ name.charAt(0) }}</div>
-        <h5>{{ name }}</h5>
+    <fragment>
+      <div class="user-dropdown" v-show="sidepanelOpen && dropdownOpen">
+        <div class="user-info-div">
+          <div>{{ name.charAt(0) }}</div>
+          <h5>{{ name }}</h5>
+        </div>
+        <hr />
+        <ul>
+          <li>
+            <a
+              href="https://dribbble.com/shots/5922909-Notebook-Light-and-Dark-Mode"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Credits to Monika
+              <span role="img">🧡</span>
+            </a>
+          </li>
+          <li>
+            <button>Sign out ({{ email }})</button>
+          </li>
+        </ul>
       </div>
-      <hr />
-      <ul>
-        <li>
-          <a
-            href="https://dribbble.com/shots/5922909-Notebook-Light-and-Dark-Mode"
-            target="_blank"
-            rel="noopener noreferrer"
-          >Credits to Monika<span role="img">🧡</span></a>
-        </li>
-        <li>
-          <button>Sign out ({{ email }})</button>
-        </li>
-      </ul>
-    </div>
-    <Search v-bind:handleChangeView="handleChangeView" />
-    <BookmarksList v-bind:bookmarks="bookmarks" v-bind:handleChangeView="handleChangeView" />
+    </fragment>
+    <Search v-show="sidepanelOpen" v-bind:handleChangeView="handleChangeView" />
+    <BookmarksList
+      v-show="sidepanelOpen"
+      v-bind:bookmarks="bookmarks"
+      v-bind:handleChangeView="handleChangeView"
+    />
     <NotesList
+      v-show="sidepanelOpen"
       v-bind:handleChangeView="handleChangeView"
       v-bind:notes="notes"
       v-bind:selectedNoteId="selectedNote.id"
     />
-    <div class="add-note-container" v-on:click="handleModal('create-note')">
+    <div v-show="sidepanelOpen" class="add-note-container" v-on:click="handleModal('create-note')">
       <img src="../assets/icons/add-icon.svg" alt="Add icon" />
       <span>Add Note</span>
     </div>
-    <div class="trash-item-container" v-on:click="handleModal('trash')">
+    <div v-show="sidepanelOpen" class="trash-item-container" v-on:click="handleModal('trash')">
       <img src="../assets/icons/delete-bin-icon.svg" alt="Trashcan icon" />
       <span>Trash</span>
     </div>
+    <button v-on:click="toggleSidepanel" class="toggle-sidepanel-button">
+      <img v-if="sidepanelOpen" src="../assets/icons/arrow-left-circle.svg" alt="Close Sidepanel" />
+      <img v-else src="../assets/icons/arrow-right-circle.svg" alt="Open Sidepanel" />
+    </button>
   </div>
 </template>
 
@@ -50,7 +75,7 @@ import NotesList from "./NotesList";
 import Search from "./Search";
 
 export default {
-  name: "Sidebar",
+  name: "sidepanel",
   components: {
     Search,
     BookmarksList,
@@ -66,6 +91,7 @@ export default {
   data() {
     return {
       dropdownOpen: false,
+      sidepanelOpen: false,
       name: this.$store.getters.user.displayName,
       email: this.$store.getters.user.email,
     };
@@ -74,25 +100,28 @@ export default {
     toggleDropdown: function () {
       this.dropdownOpen = !this.dropdownOpen;
     },
+    toggleSidepanel: function () {
+      this.sidepanelOpen = !this.sidepanelOpen;
+    },
   },
 };
 </script>
 
 <style lang="scss">
-.sidebar-component {
+.sidepanel-component {
   display: flex;
   flex-direction: column;
-  position: relative;
   background-color: #fdfbf7;
   color: #5c5a56;
-  width: 380px;
+  left: 0;
   height: 100%;
-  padding: 35px 30px;
+  max-width: 90%;
   box-sizing: border-box;
+  transition: 0.5s;
 
   .user-dropdown {
     position: absolute;
-    top: 100px;
+    top: 90px;
     background-color: #ffe8dd;
     border-radius: 5px;
     width: calc(100% - 60px);
@@ -161,7 +190,7 @@ export default {
         padding: 10px;
         width: 100%;
 
-        span[role=img] {
+        span[role="img"] {
           margin-left: 5px;
         }
 
@@ -173,11 +202,13 @@ export default {
     }
   }
 
-  .sidebar-top {
+  .sidepanel-top {
     display: flex;
     margin-bottom: 40px;
     cursor: pointer;
-    padding: 10px;
+    padding: 5px 10px;
+    margin-top: -5px;
+    box-sizing: border-box;
     border-radius: 5px;
     user-select: none;
 
@@ -263,6 +294,22 @@ export default {
     img {
       margin-right: 10px;
       cursor: pointer;
+    }
+  }
+
+  .toggle-sidepanel-button {
+    margin-top: auto;
+    width: 40px;
+    height: 40px;
+    background: transparent;
+    user-select: none;
+
+    &:focus {
+      outline: none;
+    }
+
+    img {
+      width: 30px;
     }
   }
 

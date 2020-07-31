@@ -1,6 +1,6 @@
 <template>
   <div class="home-component">
-    <Sidebar
+    <Sidepanel
       v-bind:notes="notes"
       v-bind:bookmarks="bookmarks"
       v-bind:selectedNote="selectedNote"
@@ -53,7 +53,7 @@
 </template>
 
 <script>
-import Sidebar from "../components/Sidebar";
+import Sidepanel from "../components/Sidepanel";
 import Editor from "../components/Editor";
 import BookmarkIcon from "../components/BookmarkIcon";
 import firebase, { usersCollection } from "../utils/firebase";
@@ -64,7 +64,7 @@ dayjs.extend(relativeTime);
 export default {
   name: "Home",
   components: {
-    Sidebar,
+    Sidepanel,
     Editor,
     BookmarkIcon,
   },
@@ -144,12 +144,12 @@ export default {
         .filter((note) => this.$store.getters.bookmarks.includes(note.id))
         .map((bookmark) => {
           return { id: bookmark.id, name: bookmark.title };
-        })
+        });
     },
     isBookmarked: function () {
       const bookmarks = this.$store.getters.bookmarks;
-      const arrayOfBookmarkIds = bookmarks.map(bookmark => bookmark);
-			return arrayOfBookmarkIds.includes(this.selectedNote.id);
+      const arrayOfBookmarkIds = bookmarks.map((bookmark) => bookmark);
+      return arrayOfBookmarkIds.includes(this.selectedNote.id);
     },
     computedNoteData: function () {
       return {
@@ -164,16 +164,12 @@ export default {
 <style lang="scss" scoped>
 .home-component {
   height: 100%;
+  width: 100%;
   display: flex;
+  position: relative;
 
   .no-notes-screen {
     @extend %flex-center-column;
-    width: 100%;
-  }
-
-  .home-view-container {
-    padding: 40px;
-    box-sizing: border-box;
     width: 100%;
   }
 
@@ -297,6 +293,18 @@ export default {
 
   .editor-container {
     margin-top: 15px;
+  }
+}
+
+.home-view-container {
+  padding: 40px;
+  width: calc(100% - 60px);
+  box-sizing: border-box;
+}
+
+@media (max-width: 600px) {
+  .home-view-container {
+    padding: 40px 10px;
   }
 }
 </style>

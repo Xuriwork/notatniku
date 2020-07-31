@@ -9,10 +9,10 @@ module.exports = {
 	pwa: {
 		themeColor: '#f3a57e',
 		name: 'Notatniku',
-    short_name: 'Notatniku',
-    msTileColor: '#ffffff',
+		short_name: 'Notatniku',
+		msTileColor: '#ece3db',
 		manifestOptions: {
-			background_color: '#ffffff',
+			background_color: '#ece3db',
 			icons: [
 				{
 					src: './img/icons/icon-192x192.png',
