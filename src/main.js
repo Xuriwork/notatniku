@@ -20,7 +20,7 @@ auth.onAuthStateChanged((user) => {
 	store.commit('setLoading', true);
 
 	if (user) {
-		store.dispatch('fetchUser', user).then(() => store.dispatch('fetchUserTokenId'))
+		store.dispatch('fetchUser', user).then(() => store.dispatch('fetchUserTokenId'));
 	}
 
 	if (!app) {

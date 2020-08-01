@@ -19,7 +19,7 @@ Vue.use(Vuex);
 
 dotenv.config();
 
-axios.defaults.baseURL = process.env.VUE_APP_APIURL || 'https://us-central1-notatniku.cloudfunctions.net/api';
+axios.defaults.baseURL = process.env.VUE_APP_DEV_APIURL || 'https://us-central1-notatniku.cloudfunctions.net/api';
 
 export default new Vuex.Store({
 	state: {

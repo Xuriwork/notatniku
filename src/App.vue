@@ -1,5 +1,5 @@
 <template>
-  <div class="app-component">
+  <div id="app" class="app-component">
     <Loading v-if="loading" />
     <router-view v-else />
     <Modal v-if="modalType" v-bind:modalType="modalType" />
@@ -29,7 +29,6 @@ export default {
 <style lang="scss">
 html,
 body,
-
 #app {
   height: 100%;
   font-family: Quicksand;
