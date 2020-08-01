@@ -3,6 +3,7 @@ import Vuex from 'vuex';
 import router from '../router';
 import { auth, usersCollection } from '../utils/firebase';
 
+import dotenv from 'dotenv';
 import axios from 'axios';
 import { Notyf } from 'notyf';
 
@@ -16,9 +17,9 @@ const notyf = new Notyf({
 
 Vue.use(Vuex);
 
-if (process.env.NODE_ENV === 'development') {
-	axios.defaults.baseURL = 'http://localhost:5001/notatniku/us-central1/api'
-} else axios.defaults.baseURL = 'https://us-central1-notatniku.cloudfunctions.net/api';
+dotenv.config();
+
+axios.defaults.baseURL = process.env.VUE_APP_APIURL || 'https://us-central1-notatniku.cloudfunctions.net/api';
 
 export default new Vuex.Store({
 	state: {
