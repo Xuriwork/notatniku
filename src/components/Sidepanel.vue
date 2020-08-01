@@ -36,7 +36,7 @@
             </a>
           </li>
           <li>
-            <button>Sign out ({{ email }})</button>
+            <button v-on:click="handleSignOut">Sign out ({{ email }})</button>
           </li>
         </ul>
       </div>
@@ -99,6 +99,9 @@ export default {
       this.sidepanelOpen = !this.sidepanelOpen;
       if (this.dropdownOpen) this.dropdownOpen = false;
     },
+    handleSignOut: function() {
+      this.$store.dispatch("signOut");
+    }
   },
 };
 </script>

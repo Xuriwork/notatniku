@@ -71,7 +71,7 @@ export default new Vuex.Store({
 			const { user } = await auth
 				.signInWithEmailAndPassword(data.email, data.password)
 				.catch((error) => notyf.error({ message: error.message }));
-				
+
 			dispatch('fetchUser', user).then(() => {
 				router.push('/');
 				commit('setLoading', false);
@@ -90,11 +90,11 @@ export default new Vuex.Store({
 				.catch((error) => notyf.error({ message: error.message }));
 			dispatch('fetchUser', user);
 		},
-		async handleSignOut({ commit }) {
-			await auth
-				.signOut()
-				.then(() => router.push('/'))
-				.catch((error) => commit('setErrors', error));
+		async signOut({ commit }) {
+			commit('setLoading', true);
+			await auth.signOut().then(() => router.push('/sign-in'))
+			.catch((error) => commit('setErrors', error));
+			commit('setLoading', false);
 		},
 		async handleForgotPassword(_, email) {
 			await auth.sendPasswordResetEmail(email);
