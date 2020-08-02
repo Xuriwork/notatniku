@@ -1,13 +1,5 @@
 <template>
-  <div
-    class="sidepanel-component"
-    v-bind:style="{
-      width: sidepanelOpen ? '380px' : '60px', 
-      padding: sidepanelOpen ? '35px 30px' : '35px 0',
-      alignItems: sidepanelOpen ? 'initial' : 'center',
-      zIndex: sidepanelOpen ? '2' : '1',
-    }"
-  >
+  <div class="sidepanel-component" v-bind:style="sidePanelStylesObject">
     <div
       class="sidepanel-top"
       v-on="{click: !sidepanelOpen ? toggleSidepanel : (sidepanelOpen && toggleDropdown)}"
@@ -18,28 +10,28 @@
         <span>{{ email }}</span>
       </div>
     </div>
-      <div class="user-dropdown" v-show="sidepanelOpen && dropdownOpen">
-        <div class="user-info-div">
-          <div>{{ name.charAt(0) }}</div>
-          <h5>{{ name }}</h5>
-        </div>
-        <hr />
-        <ul>
-          <li>
-            <a
-              href="https://dribbble.com/shots/5922909-Notebook-Light-and-Dark-Mode"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Credits to Monika
-              <span role="img">🧡</span>
-            </a>
-          </li>
-          <li>
-            <button v-on:click="handleSignOut">Sign out ({{ email }})</button>
-          </li>
-        </ul>
+    <div class="user-dropdown" v-show="sidepanelOpen && dropdownOpen">
+      <div class="user-info-div">
+        <div>{{ name.charAt(0) }}</div>
+        <h5>{{ name }}</h5>
       </div>
+      <hr />
+      <ul>
+        <li>
+          <a
+            href="https://dribbble.com/shots/5922909-Notebook-Light-and-Dark-Mode"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Credits to Monika
+            <span role="img">🧡</span>
+          </a>
+        </li>
+        <li>
+          <button v-on:click="handleSignOut">Sign out ({{ email }})</button>
+        </li>
+      </ul>
+    </div>
     <Search v-show="sidepanelOpen" v-bind:handleChangeView="handleChangeView" />
     <fragment v-if="sidepanelOpen">
       <BookmarksList v-bind:bookmarks="bookmarks" v-bind:handleChangeView="handleChangeView" />
@@ -99,9 +91,19 @@ export default {
       this.sidepanelOpen = !this.sidepanelOpen;
       if (this.dropdownOpen) this.dropdownOpen = false;
     },
-    handleSignOut: function() {
+    handleSignOut: function () {
       this.$store.dispatch("signOut");
-    }
+    },
+  },
+  computed: {
+    sidePanelStylesObject: function () {
+      return {
+        width: this.sidepanelOpen ? "380px" : "60px",
+        padding: this.sidepanelOpen ? "35px 30px" : "35px 0",
+        alignItems: this.sidepanelOpen ? "initial" : "center",
+        zIndex: this.sidepanelOpen ? "2" : "1",
+      }
+    },
   },
 };
 </script>

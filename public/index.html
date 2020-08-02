@@ -1,16 +1,16 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang='en'>
 	<head>
-		<meta charset="utf-8" />
-		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-		<meta name="viewport" content="width=device-width,initial-scale=1.0" />
-		<link rel="icon" type="image/svg+xml" href="<%= BASE_URL %>favicon.svg">
-		<link rel="alternate icon" href="<%= BASE_URL %>favicon.ico">
+		<meta charset='utf-8' />
+		<meta http-equiv='X-UA-Compatible' content='IE=edge' />
+		<meta name='viewport' content='width=device-width,initial-scale=1.0' />
+		<link rel='icon' type='image/svg+xml' href='<%= BASE_URL %>favicon.svg'>
+		<link rel='alternate icon' href='<%= BASE_URL %>favicon.ico'>
 		<link
-			href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap"
-			rel="stylesheet"
+			href='https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap'
+			rel='stylesheet'
 		/>
-		<meta name="description" content="Notebook application - take your notes!">
+		<meta name='description' content='Notebook application - take your notes!'>
 		<title>Notatniku</title>
 	</head>
 	<body>
@@ -21,10 +21,52 @@
 				continue.</strong
 			>
 		</noscript>
-		<div id="app">
-			<div class="loading-container">
-				<div class="loader"></div>
+		<div id='app'>
+			<div class='loading-container'>
+				<div class='loader'></div>
 			</div>
 		</div>
+		<div class='addToHomeScreenPopup' id='addToHomeScreenPopup'>
+			<h1>Install Notatniku</h1>
+			<p>Use Notatniku as a standalone app, no web browser needed.</p>
+			<div>
+				<button class='install-button' onclick='showInstallPopup()'>Install</button>
+				<button onclick='handleDoNotInstall()'>No</button>
+			</div>
+		</div>
+		<script>
+			const showInstall = localStorage.getItem('showInstall');
+			
+			if (!showInstall) {
+
+				let deferredPrompt;
+				const addToHomeScreenPopup = document.getElementById('addToHomeScreenPopup');
+				
+				window.addEventListener('beforeinstallprompt', (e) => {
+					e.preventDefault();
+					deferredPrompt = e;
+					console.log(e);
+					addToHomeScreenPopup.style.display = 'block';
+				});
+
+				const showInstallPopup = () => {
+					addToHomeScreenPopup.style.display = 'none';
+					deferredPrompt.prompt();
+				
+					deferredPrompt.userChoice.then(({ outcome }) => {
+					console.log(outcome);
+					if (outcome === 'accepted') console.log('User accepted');
+					else console.log('User declined the install prompt');
+					deferredPrompt = null;
+					});
+				};
+
+			};
+
+			const handleDoNotInstall = () => {
+				addToHomeScreenPopup.style.display = 'none';
+				localStorage.setItem('showInstall', false);
+			};
+		</script>
 	</body>
 </html>
