@@ -26,47 +26,11 @@
 				<div class='loader'></div>
 			</div>
 		</div>
-		<div class='addToHomeScreenPopup' id='addToHomeScreenPopup'>
-			<h1>Install Notatniku</h1>
-			<p>Use Notatniku as a standalone app, no web browser needed.</p>
-			<div>
-				<button class='install-button' onclick='showInstallPopup()'>Install</button>
-				<button onclick='handleDoNotInstall()'>No</button>
-			</div>
-		</div>
 		<script>
-			const showInstall = localStorage.getItem('showInstall');
-			
-			if (!showInstall) {
-
-				let deferredPrompt;
-				const addToHomeScreenPopup = document.getElementById('addToHomeScreenPopup');
-				
-				window.addEventListener('beforeinstallprompt', (e) => {
-					e.preventDefault();
-					deferredPrompt = e;
-					console.log(e);
-					addToHomeScreenPopup.style.display = 'block';
-				});
-
-				const showInstallPopup = () => {
-					addToHomeScreenPopup.style.display = 'none';
-					deferredPrompt.prompt();
-				
-					deferredPrompt.userChoice.then(({ outcome }) => {
-					console.log(outcome);
-					if (outcome === 'accepted') console.log('User accepted');
-					else console.log('User declined the install prompt');
-					deferredPrompt = null;
-					});
-				};
-
-			};
-
-			const handleDoNotInstall = () => {
-				addToHomeScreenPopup.style.display = 'none';
-				localStorage.setItem('showInstall', false);
-			};
+			window.addEventListener('beforeinstallprompt', (e) => {
+				e.preventDefault();
+				window.deferredPrompt = e;
+			});
 		</script>
 	</body>
 </html>

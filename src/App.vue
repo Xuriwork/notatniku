@@ -76,48 +76,6 @@ a {
   height: 100%;
 }
 
-.addToHomeScreenPopup {
-  display: none;
-  position: absolute;
-  width: 100%;
-  bottom: 0;
-  left: 0;
-  padding: 15px 20px;
-  box-sizing: border-box;
-  background-color: var(--theme-color);
-  z-index: 9999999;
-
-  h1 {
-    font-size: 1.5em;
-  }
-
-  p {
-    font-size: 0.95em;
-    color: #ffffff;
-    margin-bottom: 15px;
-  }
-
-  > div {
-    display: flex;
-
-    button {
-      color: #5c5a56;
-    }
-
-    .install-button {
-      padding: 5px 20px;
-      background-color: #ffffff;
-      margin-right: 15px;
-      border-radius: 4px;
-      font-size: 0.9em;
-    }
-
-    button:nth-of-type(2) {
-      background: transparent;
-    }
-  }
-}
-
 .sign-in-component,
 .sign-up-component,
 .forgot-password-component {

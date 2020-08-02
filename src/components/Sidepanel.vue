@@ -17,6 +17,27 @@
       </div>
       <hr />
       <ul>
+        <li v-if="deferredPrompt">
+          <button v-on:click="handlePromptInstall" class="install-button">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="#5c5a56"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="feather feather-download"
+            >
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+              <polyline points="7 10 12 15 17 10" />
+              <line x1="12" y1="15" x2="12" y2="3" />
+            </svg>
+            Install Notatniku
+          </button>
+        </li>
         <li>
           <a
             href="https://dribbble.com/shots/5922909-Notebook-Light-and-Dark-Mode"
@@ -81,6 +102,7 @@ export default {
       sidepanelOpen: false,
       name: this.$store.getters.user.displayName,
       email: this.$store.getters.user.email,
+      deferredPrompt: window.deferredPrompt,
     };
   },
   methods: {
@@ -94,6 +116,7 @@ export default {
     handleSignOut: function () {
       this.$store.dispatch("signOut");
     },
+    handlePromptInstall: () => window.deferredPrompt.prompt(),
   },
   computed: {
     sidePanelStylesObject: function () {
@@ -102,7 +125,7 @@ export default {
         padding: this.sidepanelOpen ? "35px 30px" : "35px 0",
         alignItems: this.sidepanelOpen ? "initial" : "center",
         zIndex: this.sidepanelOpen ? "2" : "1",
-      }
+      };
     },
   },
 };
@@ -186,6 +209,21 @@ export default {
       li {
         font-weight: 500;
         font-size: 0.9em;
+        color: #5c5a56;
+      }
+
+      .install-button {
+        display: flex;
+        align-items: center;
+
+        svg {
+          margin-right: 8px;
+          width: 18px;
+        }
+
+        &:hover svg {
+          stroke: #ffffff;
+        }
       }
 
       a {
