@@ -1,5 +1,9 @@
 <template>
-  <div class="sidepanel-component" v-bind:style="sidepanelStylesObject">
+  <div
+    class="sidepanel-component"
+    v-bind:style="sidepanelStylesObject"
+    v-bind:data-isOpen="sidepanelOpen"
+  >
     <div
       class="sidepanel-top"
       v-on="{click: !sidepanelOpen ? toggleSidepanel : (sidepanelOpen && toggleDropdown)}"
@@ -92,27 +96,22 @@ export default {
   props: {
     notes: Array,
     bookmarks: Array,
+    toggleSidepanel: Function,
+    sidepanelOpen: Boolean,
+    toggleDropdown: Function,
+    dropdownOpen: Boolean,
     handleChangeView: Function,
     handleModal: Function,
     selectedNote: Object,
   },
   data() {
     return {
-      dropdownOpen: false,
-      sidepanelOpen: false,
       name: this.$store.getters.user.displayName,
       email: this.$store.getters.user.email,
       deferredPrompt: window.deferredPrompt,
     };
   },
   methods: {
-    toggleDropdown() {
-      this.dropdownOpen = !this.dropdownOpen;
-    },
-    toggleSidepanel() {
-      this.sidepanelOpen = !this.sidepanelOpen;
-      if (this.dropdownOpen) this.dropdownOpen = false;
-    },
     handleSignOut() {
       this.$store.dispatch("signOut");
     },

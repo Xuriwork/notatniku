@@ -6,6 +6,10 @@
       v-bind:selectedNote="selectedNote"
       v-bind:handleChangeView="handleChangeView"
       v-bind:handleModal="handleModal"
+      v-bind:toggleSidepanel="toggleSidepanel"
+      v-bind:sidepanelOpen="sidepanelOpen"
+      v-bind:toggleDropdown="toggleDropdown"
+      v-bind:dropdownOpen="dropdownOpen"
     />
     <div class="no-notes-screen" v-if="!notes.length">You have 0 notes</div>
     <div class="home-view-container" v-else>
@@ -50,6 +54,9 @@
         />
       </div>
     </div>
+    <button class="floating-action-button" v-on:click="toggleSidepanel">
+      <img src="../assets/icons/notatniku-logo.svg" alt />
+    </button>
   </div>
 </template>
 
@@ -75,9 +82,18 @@ export default {
       sessionSavedAt: null,
       noteData: {},
       error: null,
+      sidepanelOpen: false,
+      dropdownOpen: false,
     };
   },
   methods: {
+    toggleSidepanel() {
+      this.sidepanelOpen = !this.sidepanelOpen;
+      if (this.dropdownOpen) this.dropdownOpen = false;
+    },
+    toggleDropdown() {
+      this.dropdownOpen = !this.dropdownOpen;
+    },
     handleModal(type) {
       this.$store.commit("setModalType", type);
     },
@@ -85,6 +101,7 @@ export default {
       this.state = null;
       const id = e.target.id;
       const index = this.notes.findIndex((note) => note.id === id);
+      if (this.sidepanelOpen) this.sidepanelOpen = false;
       return this.$store.commit("setSelectedNoteIndex", index);
     },
     handleBookmark(note, isBookmarked) {
@@ -301,14 +318,38 @@ export default {
   width: 100%;
 }
 
+.floating-action-button {
+  display: none;
+}
+
 @media (max-width: 600px) {
   .home-view-container {
-    padding: 40px 10px;
-    margin-left: 60px;
+    padding: 40px 15px;
   }
 
   .sidepanel-component {
     position: absolute;
+    transform: translateX(-100%);
+  }
+
+  .sidepanel-component[data-isOpen=true] {
+    transform: translateX(0%);
+  }
+
+  .floating-action-button {
+    display: block;
+    z-index: 10;
+    position: absolute;
+    bottom: 15px;
+    right: 15px;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: transparent;
+
+    img {
+      width: 50px;
+    }
   }
 }
 </style>
