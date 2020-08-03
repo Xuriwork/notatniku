@@ -52,14 +52,14 @@ export default {
     };
   },
   methods: {
-    validateForm: function() {
+    validateForm() {
       const form = this.email && this.password;
       if (form) return true;
       if (!this.email) this.errors.email = "This field is required.";
       if (!this.password) this.errors.password = "This field is required.";
       return false;
     },
-    handleSignIn: function() {
+    handleSignIn() {
       if (this.validateForm()) {
         this.$store.dispatch("signIn", {
           email: this.email,

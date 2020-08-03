@@ -16,10 +16,10 @@ export default {
     Loading,
   },
   computed: {
-    loading: function () {
+    loading() {
       return this.$store.getters.loading;
     },
-    modalType: function () {
+    modalType() {
       return this.$store.getters.modalType;
     },
   }

@@ -98,14 +98,14 @@ export default {
     };
   },
   methods: {
-    closeModal: function (e) {
+    closeModal(e) {
       const modalOverlay = document.getElementById("modal-overlay");
       const cancelButton = document.querySelector(".cancel-button");
       if (e.target === modalOverlay || e.target === cancelButton) {
         this.$store.commit("setModalType", null);
       }
     },
-    handleCreateNote: function () {
+    handleCreateNote() {
       this.loading = true;
 
       const noteName = this.noteName;
@@ -177,10 +177,10 @@ export default {
           .catch((error) => console.error(error));
       }
     },
-    changeModalToUploadImage: function () {
+    changeModalToUploadImage() {
       this.$store.commit("setModalType", "uploadImage");
     },
-    changeModalToViewExtractedText: function () {
+    changeModalToViewExtractedText() {
       this.$store.commit("setModalType", "viewExtractedText");
     },
     handleChooseFile() {
@@ -235,7 +235,7 @@ export default {
     },
   },
   computed: {
-    modalInfo: function () {
+    modalInfo() {
       let modalInfo = {};
 
       if (this.modalType === "create-note") {
@@ -267,19 +267,19 @@ export default {
       }
       return modalInfo;
     },
-    notes: function () {
+    notes() {
       return this.$store.getters.notes;
     },
-    selectedNote: function () {
+    selectedNote() {
       return this.$store.getters.selectedNote;
     },
-    isBookmarked: function () {
+    isBookmarked() {
       return this.$store.getters.isBookmarked;
     },
-    trash: function () {
+    trash() {
       return this.$store.getters.trash;
     },
-    userId: function () {
+    userId() {
       return this.$store.getters.userId;
     },
   },

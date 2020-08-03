@@ -106,20 +106,20 @@ export default {
     };
   },
   methods: {
-    toggleDropdown: function () {
+    toggleDropdown() {
       this.dropdownOpen = !this.dropdownOpen;
     },
-    toggleSidepanel: function () {
+    toggleSidepanel() {
       this.sidepanelOpen = !this.sidepanelOpen;
       if (this.dropdownOpen) this.dropdownOpen = false;
     },
-    handleSignOut: function () {
+    handleSignOut() {
       this.$store.dispatch("signOut");
     },
     handlePromptInstall: () => window.deferredPrompt.prompt(),
   },
   computed: {
-    sidePanelStylesObject: function () {
+    sidePanelStylesObject() {
       return {
         width: this.sidepanelOpen ? "380px" : "60px",
         padding: this.sidepanelOpen ? "35px 30px" : "35px 0",

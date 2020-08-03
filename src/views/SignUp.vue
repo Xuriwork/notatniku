@@ -73,7 +73,7 @@ export default {
     };
   },
   methods: {
-    validateForm: function() {
+    validateForm() {
       this.errors = {};
       const form = this.email && this.password && this.confirmPassword && this.name;
       if (form) return true;
@@ -87,7 +87,7 @@ export default {
 
       return false;
     },
-    handleSignUp: function() {
+    handleSignUp() {
       if (this.validateForm()) {
         this.$store.dispatch("signUp", {
           email: this.email,
@@ -96,7 +96,7 @@ export default {
         });
       }
     },
-    validateEmail: function(email) {
+    validateEmail(email) {
       const regEx = /[^@ \t\r\n]+@[^@ \t\r\n]+\.[^@ \t\r\n]+/;
       return regEx.test(email);
     }

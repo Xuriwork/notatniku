@@ -39,7 +39,7 @@ export default {
     };
   },
   methods: {
-    handleForgotPassword: function() {
+    handleForgotPassword() {
       if (!this.email) return (this.error = "Enter your email.");
       this.$store
         .dispatch("handleForgotPassword", this.email)

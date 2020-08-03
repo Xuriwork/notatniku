@@ -46,6 +46,7 @@
           v-bind:initialContent="computedNoteData.content"
           v-bind:key="selectedNote.id"
           v-bind:updateNoteContent="updateNoteContent"
+          v-bind:handleUpdateNote="handleUpdateNote"
         />
       </div>
     </div>
@@ -77,16 +78,16 @@ export default {
     };
   },
   methods: {
-    handleModal: function (type) {
+    handleModal(type) {
       this.$store.commit("setModalType", type);
     },
-    handleChangeView: function (e) {
+    handleChangeView(e) {
       this.state = null;
       const id = e.target.id;
       const index = this.notes.findIndex((note) => note.id === id);
       return this.$store.commit("setSelectedNoteIndex", index);
     },
-    handleBookmark: function (note, isBookmarked) {
+    handleBookmark(note, isBookmarked) {
       if (isBookmarked) {
         return usersCollection.doc(this.userId).update({
           bookmarks: firebase.firestore.FieldValue.arrayRemove(note.id),
@@ -96,7 +97,7 @@ export default {
         bookmarks: firebase.firestore.FieldValue.arrayUnion(note.id),
       });
     },
-    updateNoteTitle: function (e) {
+    updateNoteTitle(e) {
       this.noteData.title = e.target.innerText;
     },
     updateNoteContent(e) {
@@ -106,13 +107,8 @@ export default {
       this.state = "saved";
       this.sessionSavedAt = dayjs().format("HH:mm:ss");
     },
-    handleUpdateNote() {
+    async handleUpdateNote() {
       this.state = "loading";
-      const {
-        selectedNote: { id },
-        noteData,
-        userId,
-      } = this;
 
       if (this.noteData.title) {
         const sanitizedTitle = this.$sanitize(this.noteData.title.trim());
@@ -120,38 +116,42 @@ export default {
         if (this.noteData.title.trim() === "") this.noteData.title = "Untitled";
       }
 
-      usersCollection
-        .doc(userId)
-        .collection("notes")
-        .doc(id)
-        .update(noteData)
-        .then(() => this.setStateToSaved())
-        .catch((error) => console.error(error));
+      try {
+        await usersCollection
+          .doc(this.userId)
+          .collection("notes")
+          .doc(this.selectedNote.id)
+          .update(this.noteData)
+          .then(() => this.setStateToSaved());
+      } catch (error) {
+        this.state = "error";
+        this.error = error;
+      }
     },
   },
   computed: {
-    userId: function () {
+    userId() {
       return this.$store.getters.userId;
     },
-    notes: function () {
+    notes() {
       return this.$store.getters.notes;
     },
-    selectedNote: function () {
+    selectedNote() {
       return this.$store.getters.selectedNote;
     },
-    bookmarks: function () {
+    bookmarks() {
       return this.notes
         .filter((note) => this.$store.getters.bookmarks.includes(note.id))
         .map((bookmark) => {
           return { id: bookmark.id, name: bookmark.title };
         });
     },
-    isBookmarked: function () {
+    isBookmarked() {
       const bookmarks = this.$store.getters.bookmarks;
       const arrayOfBookmarkIds = bookmarks.map((bookmark) => bookmark);
       return arrayOfBookmarkIds.includes(this.selectedNote.id);
     },
-    computedNoteData: function () {
+    computedNoteData() {
       return {
         content: this.selectedNote.content,
         title: this.selectedNote.title,

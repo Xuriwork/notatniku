@@ -12,6 +12,7 @@
     "axios": "^0.19.2",
     "core-js": "^3.6.5",
     "dayjs": "^1.8.29",
+    "debounce": "^1.2.0",
     "eslint-plugin-prettier": "^3.1.4",
     "firebase": "^7.16.0",
     "fuzzaldrin-plus": "^0.6.0",

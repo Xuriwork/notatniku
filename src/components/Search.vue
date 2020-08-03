@@ -31,7 +31,7 @@ export default {
     };
   },
   methods: {
-    handleSelectResult: function(e) {
+    handleSelectResult(e) {
       this.handleChangeView(e);
       this.searchText = '';
     }
