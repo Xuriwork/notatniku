@@ -55,7 +55,7 @@
       </div>
     </div>
     <button class="floating-action-button" v-on:click="toggleSidepanel">
-      <img src="../assets/icons/notatniku-logo.svg" alt />
+      <img src="../assets/icons/circle-icon.svg" alt />
     </button>
   </div>
 </template>
@@ -337,7 +337,6 @@ export default {
   }
 
   .floating-action-button {
-    display: block;
     z-index: 3;
     position: absolute;
     bottom: 15px;
@@ -345,10 +344,13 @@ export default {
     width: 50px;
     height: 50px;
     border-radius: 50%;
-    background-color: transparent;
+    background-color: #e79166;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
     img {
-      width: 50px;
+      width: 30px;
     }
   }
 }
