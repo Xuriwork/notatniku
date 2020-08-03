@@ -338,7 +338,7 @@ export default {
 
   .floating-action-button {
     display: block;
-    z-index: 10;
+    z-index: 3;
     position: absolute;
     bottom: 15px;
     right: 15px;
