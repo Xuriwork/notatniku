@@ -1,5 +1,5 @@
 <template>
-  <div class="home-component">
+  <div class="home-component" v-touch:swipe.right="toggleSidepanel">
     <Sidepanel
       v-bind:notes="notes"
       v-bind:bookmarks="bookmarks"

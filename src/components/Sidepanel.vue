@@ -3,6 +3,7 @@
     class="sidepanel-component"
     v-bind:style="sidepanelStylesObject"
     v-bind:data-isOpen="sidepanelOpen"
+    v-touch:swipe.left="toggleSidepanel"
   >
     <div
       class="sidepanel-top"
