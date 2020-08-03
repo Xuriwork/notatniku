@@ -1,5 +1,5 @@
 <template>
-  <div class="sidepanel-component" v-bind:style="sidePanelStylesObject">
+  <div class="sidepanel-component" v-bind:style="sidepanelStylesObject">
     <div
       class="sidepanel-top"
       v-on="{click: !sidepanelOpen ? toggleSidepanel : (sidepanelOpen && toggleDropdown)}"
@@ -119,7 +119,7 @@ export default {
     handlePromptInstall: () => window.deferredPrompt.prompt(),
   },
   computed: {
-    sidePanelStylesObject() {
+    sidepanelStylesObject() {
       return {
         width: this.sidepanelOpen ? "380px" : "60px",
         padding: this.sidepanelOpen ? "35px 30px" : "35px 0",
