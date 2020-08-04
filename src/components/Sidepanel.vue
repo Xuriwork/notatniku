@@ -122,6 +122,7 @@ export default {
     sidepanelStylesObject() {
       return {
         width: this.sidepanelOpen ? "380px" : "60px",
+        minWidth: this.sidepanelOpen ? "280px" : "0",
         padding: this.sidepanelOpen ? "35px 30px" : "35px 0",
         alignItems: this.sidepanelOpen ? "initial" : "center",
         zIndex: this.sidepanelOpen ? "2" : "1",

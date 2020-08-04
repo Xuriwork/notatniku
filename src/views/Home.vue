@@ -101,7 +101,6 @@ export default {
       this.state = null;
       const id = e.target.id;
       const index = this.notes.findIndex((note) => note.id === id);
-      if (this.sidepanelOpen) this.sidepanelOpen = false;
       return this.$store.commit("setSelectedNoteIndex", index);
     },
     handleBookmark(note, isBookmarked) {
@@ -311,23 +310,7 @@ export default {
   .editor-container {
     margin-top: 15px;
     overflow-y: auto;
-    height: calc(100% - 160px);
-    max-height: 700px;
-
-          &::-webkit-scrollbar {
-        width: 6px;
-        background-color: #f5f5f5;
-        border-radius: 50px;
-      }
-
-      &::-webkit-scrollbar-track {
-        background-color: #f5f5f5;
-      }
-
-      &::-webkit-scrollbar-thumb {
-        background-color: #f89b5e;
-        border-radius: 50px;
-      }
+    height: calc(100% - 100px);
   }
 }
 

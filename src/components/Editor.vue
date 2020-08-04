@@ -45,6 +45,6 @@ export default {
 .editor {
   text-decoration: initial !important;
   text-decoration: underline;
-  overflow: hidden;
+  height: calc(100% - 120px);
 }
 </style>
