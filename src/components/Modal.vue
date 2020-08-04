@@ -17,7 +17,13 @@
           </ul>
         </div>
         <ul v-if="modalType === 'more-items'" class="more-items-list">
-          <li v-on:click="handleExportToPDF">📄 Export to PDF</li>
+          <li v-on:click="handleExportToTxt">📄 Export to .txt File</li>
+          <a 
+            id="download_link" 
+            v-bind:download="selectedNote.title" 
+            href="" 
+            style="display: none">
+          </a>
           <li v-on:click="changeModalToUploadImage" v-bind:disabled="loading">📷 Convert image to text</li>
           <li
             class="add-to-trash"
@@ -74,7 +80,7 @@ import firebase, { db, usersCollection } from "../utils/firebase";
 import uniqid from "uniqid";
 import axios from "axios";
 import { Notyf } from "notyf";
-import jsPDF from 'jspdf';
+import htmlToText from 'html-to-text';
 
 const notyf = new Notyf({
   duration: 9000,
@@ -83,8 +89,6 @@ const notyf = new Notyf({
     y: "top",
   },
 });
-
-const doc = new jsPDF();
 
 export default {
   name: "Modal",
@@ -180,9 +184,12 @@ export default {
           .catch((error) => console.error(error));
       }
     },
-    handleExportToPDF() {
-      doc.fromHTML(this.selectedNote.content, 35, 35);
-      doc.save(this.selectedNote.title);
+    handleExportToTxt() {
+      const text = htmlToText.fromString(this.selectedNote.content, { wordwrap: 130 });
+      const data = new Blob([text], { type: 'text/plain' });
+      const url = window.URL.createObjectURL(data);
+      document.getElementById('download_link').href = url;
+      document.getElementById('download_link').click();
     },
     changeModalToUploadImage() {
       this.$store.commit("setModalType", "uploadImage");
