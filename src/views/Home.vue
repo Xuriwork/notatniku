@@ -317,6 +317,7 @@ export default {
 .home-view-container {
   padding: 40px;
   width: 100%;
+  height: calc(100% - 80px);
 }
 
 .floating-action-button {
@@ -326,6 +327,7 @@ export default {
 @media (max-width: 600px) {
   .home-view-container {
     padding: 30px 15px;
+    height: calc(100% - 115px);
   }
 
   .sidepanel-component {
