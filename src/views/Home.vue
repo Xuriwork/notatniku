@@ -310,6 +310,24 @@ export default {
 
   .editor-container {
     margin-top: 15px;
+    overflow-y: auto;
+    height: calc(100% - 160px);
+    max-height: 700px;
+
+          &::-webkit-scrollbar {
+        width: 6px;
+        background-color: #f5f5f5;
+        border-radius: 50px;
+      }
+
+      &::-webkit-scrollbar-track {
+        background-color: #f5f5f5;
+      }
+
+      &::-webkit-scrollbar-thumb {
+        background-color: #f89b5e;
+        border-radius: 50px;
+      }
   }
 }
 
@@ -324,7 +342,7 @@ export default {
 
 @media (max-width: 600px) {
   .home-view-container {
-    padding: 40px 15px;
+    padding: 30px 15px;
   }
 
   .sidepanel-component {

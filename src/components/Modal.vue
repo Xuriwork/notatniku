@@ -17,14 +17,14 @@
           </ul>
         </div>
         <ul v-if="modalType === 'more-items'" class="more-items-list">
-          <li>Save as a PDF</li>
-          <li v-on:click="changeModalToUploadImage" v-bind:disabled="loading">Convert image to text</li>
+          <li v-on:click="handleExportToPDF">📄 Export to PDF</li>
+          <li v-on:click="changeModalToUploadImage" v-bind:disabled="loading">📷 Convert image to text</li>
           <li
-            class="add-to-trash-button"
+            class="add-to-trash"
             v-bind:id="selectedNote.id"
             v-on:click="handleAddToTrash"
             v-bind:disabled="loading"
-          >Add to trash</li>
+          >🗑️ Add to trash</li>
         </ul>
         <div v-if="modalType === 'uploadImage'">
           <form>
@@ -74,6 +74,7 @@ import firebase, { db, usersCollection } from "../utils/firebase";
 import uniqid from "uniqid";
 import axios from "axios";
 import { Notyf } from "notyf";
+import jsPDF from 'jspdf';
 
 const notyf = new Notyf({
   duration: 9000,
@@ -82,6 +83,8 @@ const notyf = new Notyf({
     y: "top",
   },
 });
+
+const doc = new jsPDF();
 
 export default {
   name: "Modal",
@@ -176,6 +179,10 @@ export default {
           .delete()
           .catch((error) => console.error(error));
       }
+    },
+    handleExportToPDF() {
+      doc.fromHTML(this.selectedNote.content, 35, 35);
+      doc.save(this.selectedNote.title);
     },
     changeModalToUploadImage() {
       this.$store.commit("setModalType", "uploadImage");
@@ -325,7 +332,7 @@ export default {
     }
 
     li:not(:last-of-type) {
-      margin-bottom: 5px;
+      margin-bottom: 12px;
     }
   }
 
@@ -410,14 +417,10 @@ export default {
   overflow-y: auto;
 }
 
-.add-to-trash-button {
-  color: #ffffff;
-  background-color: #ff5959;
-  display: inline-block;
-  padding: 4px 15px;
+.add-to-trash {
+  color: #ff5959;
   border-radius: 4px;
-  font-weight: 500;
-  margin-top: 5px;
+  font-weight: 600;
 }
 
 .choose-file-button {

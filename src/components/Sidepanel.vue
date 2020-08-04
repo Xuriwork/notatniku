@@ -133,14 +133,15 @@ export default {
 
 <style lang="scss">
 .sidepanel-component {
+  position: relative;
   display: flex;
   flex-direction: column;
-  position: relative;
   background-color: #fdfbf7;
   color: #5c5a56;
   left: 0;
   height: 100%;
   max-width: 90%;
+  overflow-x: hidden;
   box-sizing: border-box;
   transition: 0.5s;
 
@@ -267,23 +268,6 @@ export default {
     }
   }
 
-  ul {
-    li {
-      display: flex;
-      align-items: center;
-      font-weight: 700;
-      cursor: pointer;
-
-      img {
-        margin-right: 10px;
-      }
-
-      &:not(:last-of-type) {
-        margin-bottom: 5px;
-      }
-    }
-  }
-
   .bookmarks-list-container,
   .notes-list-container {
     margin-bottom: 25px;
@@ -293,6 +277,21 @@ export default {
       overflow-x: hidden;
       max-height: 200px;
       padding-right: 2px;
+
+      li {
+        display: flex;
+        align-items: center;
+        font-weight: 700;
+        cursor: pointer;
+
+        img {
+          margin-right: 10px;
+        }
+
+        &:not(:last-of-type) {
+          margin-bottom: 5px;
+        }
+      }
 
       &::-webkit-scrollbar {
         width: 6px;
@@ -308,10 +307,6 @@ export default {
         background-color: #f89b5e;
         border-radius: 50px;
       }
-    }
-
-    li {
-      cursor: pointer;
     }
   }
 
