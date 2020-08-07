@@ -32,11 +32,11 @@
         />
       </header>
       <div class="data-state-container">
-        <button v-on:click="handleUpdateNote" class="save-button">Save</button>
         <span v-if="state === 'saved' && sessionSavedAt" class="saved-state">
           <img src="../assets/icons/cloud-icon.svg" alt="cloud icon" />
           Saved at {{ sessionSavedAt }}
         </span>
+        <span v-if="state === 'modified'">Modified</span>
         <span
           v-else-if="state === 'error'"
           style="color: #ff5959; font-weight: 600"
@@ -65,8 +65,8 @@ import Sidepanel from "../components/Sidepanel";
 import Editor from "../components/Editor";
 import BookmarkIcon from "../components/BookmarkIcon";
 import firebase, { usersCollection } from "../utils/firebase";
-import sanitizeHTML from 'sanitize-html';
-import debounce from 'debounce';
+import sanitizeHTML from "sanitize-html";
+import debounce from "debounce";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 dayjs.extend(relativeTime);
@@ -100,10 +100,13 @@ export default {
       this.$store.commit("setModalType", type);
     },
     handleChangeView(e) {
-      this.state = null;
       const id = e.target.id;
       const index = this.notes.findIndex((note) => note.id === id);
-      return this.$store.commit("setSelectedNoteIndex", index);
+      if (this.state === "modified") {
+        this.handleUpdateNote()
+        this.$store.commit("setSelectedNoteIndex", index);
+      }
+      else this.$store.commit("setSelectedNoteIndex", index);
     },
     handleBookmark(note, isBookmarked) {
       if (isBookmarked) {
@@ -116,12 +119,14 @@ export default {
       });
     },
     updateNoteTitle(e) {
+      this.state = "modified";
       this.noteData.title = e.target.innerText;
-      //this.debouncedUpdate();
+      this.debouncedUpdate();
     },
     updateNoteContent(e) {
+      this.state = "modified";
       this.noteData.content = e;
-      //this.debouncedUpdate();
+      this.debouncedUpdate();
     },
     setStateToSaved() {
       this.state = "saved";
@@ -242,6 +247,7 @@ export default {
   .data-state-container {
     margin-top: 10px;
     display: flex;
+    align-items: center;
 
     button {
       margin-right: 10px;
@@ -342,7 +348,7 @@ export default {
     transform: translateX(-100%);
   }
 
-  .sidepanel-component[data-isOpen=true] {
+  .sidepanel-component[data-isOpen="true"] {
     transform: translateX(0%);
   }
 
