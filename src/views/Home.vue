@@ -65,6 +65,8 @@ import Sidepanel from "../components/Sidepanel";
 import Editor from "../components/Editor";
 import BookmarkIcon from "../components/BookmarkIcon";
 import firebase, { usersCollection } from "../utils/firebase";
+import sanitizeHTML from 'sanitize-html';
+import debounce from 'debounce';
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 dayjs.extend(relativeTime);
@@ -115,19 +117,24 @@ export default {
     },
     updateNoteTitle(e) {
       this.noteData.title = e.target.innerText;
+      //this.debouncedUpdate();
     },
     updateNoteContent(e) {
       this.noteData.content = e;
+      //this.debouncedUpdate();
     },
     setStateToSaved() {
       this.state = "saved";
       this.sessionSavedAt = dayjs().format("HH:mm:ss");
     },
+    debouncedUpdate: debounce(function () {
+      this.handleUpdateNote();
+    }, 2000),
     async handleUpdateNote() {
       this.state = "loading";
 
       if (this.noteData.title) {
-        const sanitizedTitle = this.$sanitize(this.noteData.title.trim());
+        const sanitizedTitle = sanitizeHTML(this.noteData.title);
         this.noteData.title = sanitizedTitle;
         if (this.noteData.title.trim() === "") this.noteData.title = "Untitled";
       }

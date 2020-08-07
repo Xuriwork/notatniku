@@ -184,18 +184,18 @@ export default {
           .catch((error) => console.error(error));
       }
     },
+    changeModalToUploadImage() {
+      this.$store.commit("setModalType", "uploadImage");
+    },
+    changeModalToViewExtractedText() {
+      this.$store.commit("setModalType", "viewExtractedText");
+    },
     handleExportToTxt() {
       const text = htmlToText.fromString(this.selectedNote.content, { wordwrap: 130 });
       const data = new Blob([text], { type: 'text/plain' });
       const url = window.URL.createObjectURL(data);
       document.getElementById('download_link').href = url;
       document.getElementById('download_link').click();
-    },
-    changeModalToUploadImage() {
-      this.$store.commit("setModalType", "uploadImage");
-    },
-    changeModalToViewExtractedText() {
-      this.$store.commit("setModalType", "viewExtractedText");
     },
     handleChooseFile() {
       this.$refs.fileInput.click();

@@ -6,13 +6,11 @@ import store from './store';
 import { auth } from './utils/firebase';
 
 import Fragment from 'vue-fragment';
-import VueSanitize from 'vue-sanitize';
 import Vue2TouchEvents from 'vue2-touch-events';
 
 import 'notyf/notyf.min.css';
 
 Vue.use(Fragment.Plugin);
-Vue.use(VueSanitize);
 Vue.use(Vue2TouchEvents);
 
 Vue.config.productionTip = false;
