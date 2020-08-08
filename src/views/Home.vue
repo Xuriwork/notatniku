@@ -48,7 +48,7 @@
         <Editor
           v-bind:initialContent="selectedNote.content"
           v-bind:key="selectedNote.id"
-          v-bind:updateNoteContent="updateNoteContent"
+          v-bind:onEditorUpdate="onEditorUpdate"
           v-bind:handleUpdateNote="handleUpdateNote"
         />
       </div>
@@ -122,7 +122,7 @@ export default {
       this.noteData.title = e.target.innerText;
       this.debouncedUpdate();
     },
-    updateNoteContent(e) {
+    onEditorUpdate(e) {
       this.state = "modified"
       this.noteData.content = e;
       this.debouncedUpdate();
