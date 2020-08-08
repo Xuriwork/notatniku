@@ -3,6 +3,7 @@
     v-model="content"
     v-on:input="onEditorUpdate"
     v-bind:config="editorOption"
+    class="editor"
   ></quill-editor>
 </template>
 
