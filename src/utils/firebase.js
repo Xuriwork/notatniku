@@ -17,10 +17,10 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 
 firebase.firestore().enablePersistence()
-  .catch(function(err) {
-      if (err.code == 'failed-precondition') {
+  .catch((error) => {
+      if (error.code === 'failed-precondition') {
 		alert('Multiple tabs open, persistence can only be enabled, in one tab at a time.');
-      } else if (err.code == 'unimplemented') {
+      } else if (error.code === 'unimplemented') {
 		alert('This browser does not support all of the features required to enable persistencee');
       }
   });
