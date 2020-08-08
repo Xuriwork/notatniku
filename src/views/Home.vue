@@ -22,7 +22,7 @@
             contenteditable
             v-on:input="updateNoteTitle"
             placeholder="Untitled"
-          >{{ computedNoteData.title }}</div>
+          >{{ selectedNote.title }}</div>
         </div>
         <img
           src="../assets/icons/more-icon.svg"
@@ -36,18 +36,17 @@
           <img src="../assets/icons/cloud-icon.svg" alt="cloud icon" />
           Saved at {{ sessionSavedAt }}
         </span>
-        <span v-if="state === 'modified'">Modified</span>
+        <span v-else-if="state === 'loading'" class="loading-state">
+          <div class="loading-div"></div>Loading...
+        </span>
         <span
           v-else-if="state === 'error'"
           style="color: #ff5959; font-weight: 600"
         >Failed to save data. {{ error }}</span>
-        <span v-else-if="state === 'loading'" class="loading-state">
-          <div class="loading-div"></div>Loading...
-        </span>
       </div>
       <div class="editor-container">
         <Editor
-          v-bind:initialContent="computedNoteData.content"
+          v-bind:initialContent="selectedNote.content"
           v-bind:key="selectedNote.id"
           v-bind:updateNoteContent="updateNoteContent"
           v-bind:handleUpdateNote="handleUpdateNote"
@@ -103,7 +102,7 @@ export default {
       const id = e.target.id;
       const index = this.notes.findIndex((note) => note.id === id);
       if (this.state === "modified") {
-        this.handleUpdateNote()
+        this.handleUpdateNote();
         this.$store.commit("setSelectedNoteIndex", index);
       }
       else this.$store.commit("setSelectedNoteIndex", index);
@@ -119,12 +118,12 @@ export default {
       });
     },
     updateNoteTitle(e) {
-      this.state = "modified";
+      this.state = "modified"
       this.noteData.title = e.target.innerText;
       this.debouncedUpdate();
     },
     updateNoteContent(e) {
-      this.state = "modified";
+      this.state = "modified"
       this.noteData.content = e;
       this.debouncedUpdate();
     },
@@ -178,13 +177,7 @@ export default {
       const bookmarks = this.$store.getters.bookmarks;
       const arrayOfBookmarkIds = bookmarks.map((bookmark) => bookmark);
       return arrayOfBookmarkIds.includes(this.selectedNote.id);
-    },
-    computedNoteData() {
-      return {
-        content: this.selectedNote.content,
-        title: this.selectedNote.title,
-      };
-    },
+    }
   },
 };
 </script>
@@ -272,8 +265,8 @@ export default {
       .loading-div {
         margin-right: 12px;
         position: relative;
-        width: 1.4em;
-        height: 1.4em;
+        width: 1.2em;
+        height: 1.2em;
         border: 3px solid #e79166;
         overflow: hidden;
         animation: spin 2.5s ease infinite;
@@ -286,8 +279,8 @@ export default {
         position: absolute;
         top: -3px;
         left: -3px;
-        width: 1.4em;
-        height: 1.4em;
+        width: 1.25em;
+        height: 1.25em;
         background-color: rgba(243, 180, 98, 0.65);
         transform-origin: center bottom;
         transform: scaleY(1);
