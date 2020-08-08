@@ -1,24 +1,28 @@
 <template>
-  <vue-editor
+  <quill-editor
+    ref="myTextEditor"
     v-model="content"
-    v-bind:editor-toolbar="customToolbar"
-    class="editor"
-    v-on:input="updateNoteContent"
-  />
+    v-on:input="onEditorUpdate"
+    :config="editorOption"
+  ></quill-editor>
 </template>
 
 <script>
-import { VueEditor } from "vue2-editor";
+import { quillEditor } from "vue-quill-editor";
+import "quill/dist/quill.core.css";
+import "quill/dist/quill.snow.css";
+import "quill/dist/quill.bubble.css";
 
 export default {
-  components: { VueEditor },
+  components: { quillEditor },
   props: {
     initialContent: String,
-    updateNoteContent: Function
+    onEditorUpdate: Function,
   },
   data() {
     return {
       content: this.initialContent,
+      editorOption: {},
       customToolbar: [
         [{ header: [1, 2, 3, 4, 5, 6, false] }],
         [{ font: [] }],
@@ -28,16 +32,16 @@ export default {
           "align",
           { align: "center" },
           { align: "right" },
-          { align: "justify" }
+          { align: "justify" },
         ],
         [{ list: "ordered" }, { list: "bullet" }],
         [{ indent: "-1" }, { indent: "+1" }],
         ["color", "background"],
         ["link", "image", "video"],
-        ["clean"]
-      ]
+        ["clean"],
+      ],
     };
-  }
+  },
 };
 </script>
 
