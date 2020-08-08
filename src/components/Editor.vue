@@ -1,9 +1,8 @@
 <template>
   <quill-editor
-    ref="myTextEditor"
     v-model="content"
     v-on:input="onEditorUpdate"
-    :config="editorOption"
+    v-bind:config="editorOption"
   ></quill-editor>
 </template>
 
