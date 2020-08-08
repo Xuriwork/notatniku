@@ -2,7 +2,7 @@
   <quill-editor
     v-model="content"
     v-on:input="onEditorUpdate"
-    v-bind:config="editorOption"
+    v-bind:options="editorOption"
     class="editor"
   ></quill-editor>
 </template>
@@ -22,24 +22,27 @@ export default {
   data() {
     return {
       content: this.initialContent,
-      editorOption: {},
-      customToolbar: [
-        [{ header: [1, 2, 3, 4, 5, 6, false] }],
-        [{ font: [] }],
-        ["bold", "italic", "underline", "strike"],
-        ["blockquote", "code-block"],
-        [
-          "align",
-          { align: "center" },
-          { align: "right" },
-          { align: "justify" },
-        ],
-        [{ list: "ordered" }, { list: "bullet" }],
-        [{ indent: "-1" }, { indent: "+1" }],
-        ["color", "background"],
-        ["link", "image", "video"],
-        ["clean"],
-      ],
+      editorOption: {
+        modules: {
+          toolbar: [
+            [{ header: [1, 2, 3, 4, 5, 6, false] }],
+            [{ font: [] }],
+            ["bold", "italic", "underline", "strike"],
+            ["blockquote", "code-block"],
+            [
+              "align",
+              { align: "center" },
+              { align: "right" },
+              { align: "justify" },
+            ],
+            [{ list: "ordered" }, { list: "bullet" }],
+            [{ indent: "-1" }, { indent: "+1" }],
+            ["color", "background"],
+            ["link", "image", "video"],
+            ["clean"],
+          ],
+        },
+      },
     };
   },
 };
