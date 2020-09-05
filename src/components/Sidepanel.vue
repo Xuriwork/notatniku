@@ -212,6 +212,11 @@ export default {
         font-weight: 500;
         font-size: 0.9em;
         color: #5c5a56;
+        overflow: hidden;
+
+        a {
+          display: block;
+        }
       }
 
       .install-button {
