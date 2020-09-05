@@ -274,25 +274,10 @@ export default {
     margin-bottom: 25px;
 
     ul {
-      overflow-y: auto;
-      overflow-x: hidden;
       max-height: 200px;
-      padding-right: 2px;
-
-      li {
-        display: flex;
-        align-items: center;
-        font-weight: 700;
-        cursor: pointer;
-
-        img {
-          margin-right: 10px;
-        }
-
-        &:not(:last-of-type) {
-          margin-bottom: 5px;
-        }
-      }
+      height: 100%;
+      box-sizing: border-box;
+      overflow-y: auto;
 
       &::-webkit-scrollbar {
         width: 6px;
@@ -307,6 +292,21 @@ export default {
       &::-webkit-scrollbar-thumb {
         background-color: #f89b5e;
         border-radius: 50px;
+      }
+
+      li {
+        display: flex;
+        align-items: center;
+        font-weight: 700;
+        cursor: pointer;
+
+        img {
+          margin-right: 10px;
+        }
+
+        &:not(:last-of-type) {
+          margin-bottom: 5px;
+        }
       }
     }
   }

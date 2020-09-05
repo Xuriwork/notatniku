@@ -83,7 +83,7 @@ export default {
       sessionSavedAt: null,
       noteData: {},
       error: null,
-      sidepanelOpen: false,
+      sidepanelOpen: true,
       dropdownOpen: false,
     };
   },
