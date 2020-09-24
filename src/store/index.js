@@ -73,25 +73,40 @@ export default new Vuex.Store({
 		async signIn({ dispatch, commit }, data) {
 			const { user } = await auth
 				.signInWithEmailAndPassword(data.email, data.password)
-				.catch((error) => notyf.error({ message: error.message }));
-
-			dispatch('fetchUser', user).then(() => {
-				router.push('/');
-				commit('setLoading', false);
-			});
-		},
-		async signUp({ dispatch }, data) {
-			const { user } = await auth
-				.createUserWithEmailAndPassword(data.email, data.password)
-				.then((data) => {
-					data.user.updateProfile({ displayName: data.name });
-					usersCollection.doc(user.uid).set({
-						name: data.name,
-						dateCreated: new Date(),
+				.then(() => {
+					dispatch('fetchUser', user).then(() => {
+						router.push('/');
+						commit('setLoading', false);
 					});
 				})
 				.catch((error) => notyf.error({ message: error.message }));
-			dispatch('fetchUser', user);
+
+		},
+		async signUp({ dispatch }, data) {
+			const date = new Date();
+
+			await auth
+			.createUserWithEmailAndPassword(data.email, data.password)
+			.then((res) => {
+					const user = res.user;
+					res.user.isNewUser = true;
+					user.updateProfile({ displayName: data.name });
+					usersCollection.doc(user.uid).set({
+						name: data.name,
+						email: data.email,
+						dateCreated: date,
+					});
+					return res.user;
+				})
+				.then((user) => {
+					dispatch('fetchUser', user);
+					notyf.success({
+						message: 'You will be redirected in about 3 seconds',
+						duration: 3000,
+					});
+					setTimeout(() => router.push('/'), 3000);
+				})
+				.catch((error) => notyf.error({ message: error.message }));
 		},
 		async signOut({ commit }) {
 			commit('setLoading', true);
@@ -115,6 +130,8 @@ export default new Vuex.Store({
 				commit('setUserProfile', snapshot.data());
 			});
 			commit('setUser', user);
+
+			if (user.isNewUser) return user;
 
 			await usersCollectionRef
 				.collection('notes')
