@@ -19,7 +19,7 @@
     "html-to-text": "^5.1.1",
     "node-forge": "^0.10.0",
     "notyf": "^3.8.0",
-    "quill": "1.3.6",
+    "quill": "1.3.7",
     "register-service-worker": "^1.7.1",
     "sanitize-html": "^1.27.2",
     "uniqid": "^5.2.0",
