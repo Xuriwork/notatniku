@@ -1,13 +1,12 @@
-# notatniku
+# Notatniku
 
+Notatniku is a simple notebook web application, you can write/delete/bookmark, convert images to text, and export notes to .txt files.
 
-## The Amazing Designer
-```
-[Monika Michalczyk](https://dribbble.com/michalczyk).
-Where I got the inspiration from: [Notebook - Light and Dark Mode](https://dribbble.com/shots/5922909-Notebook-Light-and-Dark-Mode).
-```
+You can view the live app at [Vaadake Koos](https://vaadakekoos.web.app).
 
-## Project setup
+## Available Scripts
+
+### Project setup
 ```
 yarn install
 ```
@@ -17,15 +16,19 @@ yarn install
 yarn serve
 ```
 
-### Compiles and minifies for production
-```
-yarn build
-```
+Runs the app in the development mode and starts up the local server.
 
-### Lints and fixes files
-```
-yarn lint
-```
+Open [http://localhost:8080](http://localhost:8080) to view it in the browser.
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+## Technologies
+Project is created with:
+* Vue.js
+* Node.js
+* Express
+* Google Cloud Vision
+* Google Cloud Storage
+* Firebase
+* SCSS
+
+## Screenshot of the app
+![Main Screen](./Notatniku_Preview.png)
