@@ -71,10 +71,11 @@ export default new Vuex.Store({
 	},
 	actions: {
 		async signIn({ dispatch, commit }, data) {
-			const { user } = await auth
+			await auth
 				.signInWithEmailAndPassword(data.email, data.password)
-				.then(() => {
-					dispatch('fetchUser', user).then(() => {
+				.then((data) => {
+					console.log(data);
+					dispatch('fetchUser', data.user).then(() => {
 						router.push('/');
 						commit('setLoading', false);
 					});
