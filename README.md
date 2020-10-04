@@ -6,7 +6,7 @@ You can view the live app at [Notatniku](https://notatniku.web.app).
 
 ## Available Scripts
 
-### Project setup
+### Install the dependencies
 ```
 yarn install
 ```
