@@ -74,7 +74,6 @@ export default new Vuex.Store({
 			await auth
 				.signInWithEmailAndPassword(data.email, data.password)
 				.then((data) => {
-					console.log(data);
 					dispatch('fetchUser', data.user).then(() => {
 						router.push('/');
 						commit('setLoading', false);
@@ -90,14 +89,14 @@ export default new Vuex.Store({
 			.createUserWithEmailAndPassword(data.email, data.password)
 			.then((res) => {
 					const user = res.user;
-					res.user.isNewUser = true;
+					user.isNewUser = true;
 					user.updateProfile({ displayName: data.name });
 					usersCollection.doc(user.uid).set({
 						name: data.name,
 						email: data.email,
 						dateCreated: date,
 					});
-					return res.user;
+					return user;
 				})
 				.then((user) => {
 					dispatch('fetchUser', user);
