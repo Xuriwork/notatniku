@@ -2,7 +2,7 @@
 
 Notatniku is a simple notebook web application, you can write/delete/bookmark, convert images to text, and export notes to .txt files.
 
-You can view the live app at [Vaadake Koos](https://vaadakekoos.web.app).
+You can view the live app at [Notatniku](https://notatniku.web.app).
 
 ## Available Scripts
 
